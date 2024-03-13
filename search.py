@@ -54,3 +54,46 @@ def get_cat_text(x):
 df_data['cat_text'] = df_data['categories'].apply(get_cat_text)
 
 print(df_data.head())
+
+i = 1
+
+#print('Id:',df_data.loc[i, 'id'])
+#print()
+#print('Title:',df_data.loc[i, 'title'])
+#print()
+#print('Categories:',df_data.loc[i, 'cat_text'])
+#print()
+#print('Abstract:',df_data.loc[i, 'abstract'])
+
+#Clean text - remove \n characters with space, and trailing spaces
+def clean_text(x):
+    # Replace newline characters with a space
+    new_text = x.replace("\n", " ")
+    # Remove leading and trailing spaces
+    new_text = new_text.strip()
+    return new_text
+
+# Apply the clean_text function to the 'title' and 'abstract' columns
+df_data['title'] = df_data['title'].apply(clean_text)
+df_data['abstract'] = df_data['abstract'].apply(clean_text)
+
+# Create the 'prepared_text' column by concatenating 'title' and 'abstract'
+df_data['prepared_text'] = df_data['title'] + ' ' + df_data['abstract']
+
+# Create list of text strings for vectorizing
+chunk_list = list(df_data['prepared_text'])
+
+# The ids are used to create web links to each paper.
+# You can access each paper directly on ArXiv using these links:
+# https://arxiv.org/abs/{id}: ArXiv page for the paper
+# https://arxiv.org/pdf/{id}: Direct link to download the PDF
+arxiv_id_list = list(df_data['id'])
+cat_list = list(df_data['cat_text'])
+
+print(len(chunk_list))
+print(len(arxiv_id_list))
+print(len(cat_list))
+
+print(chunk_list[0])
+
+
