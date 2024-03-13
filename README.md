@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The ArXiv RAG FAISS Search Utility is an innovative tool designed to harness the power of vector similarity search for exploring the extensive collection of research papers on ArXiv. Inspired by the groundbreaking approach outlined in tutorials by vbookshelf, this utility facilitates natural language queries, enabling users to sift through approximately 2.4 million papers with unparalleled ease and efficiency. Our project stands on the shoulders of giants, integrating cutting-edge technologies like FAISS (Facebook AI Similarity Search) and Sentence Transformers to revolutionize how research is conducted and accessed.
+The ArXiv RAG FAISS Search Utility is a tool that uses vector similarity search for exploring the extensive collection of research papers on ArXiv. Inspired by the groundbreaking approach outlined in tutorials by vbookshelf, this utility facilitates natural language queries, enabling users to sift through approximately 2.4 million papers with unparalleled ease and efficiency. Our project stands on the shoulders of giants, integrating cutting-edge technologies like FAISS (Facebook AI Similarity Search) and Sentence Transformers to revolutionize how research is conducted and accessed.
 
 ## Features
 
@@ -13,7 +13,7 @@ The ArXiv RAG FAISS Search Utility is an innovative tool designed to harness the
 
 ## Getting Started
 
-To use the ArXiv RAG FAISS Search Utility, please ensure that your environment supports GPU acceleration (e.g., P100) for optimal performance. Follow the installation instructions provided in this repository to set up the utility on your system.
+To use the ArXiv RAG FAISS Search Utility, please ensure that your environment supports GPU acceleration for optimal performance. Follow the installation instructions provided in this repository to set up the utility on your system.
 
 ## How It Works
 
@@ -30,10 +30,18 @@ cd <project-directory>
 pip install -r requirements.txt
 ```
 
+#Dataset
+
+You will need the arxiv dataset which can be found at https://www.kaggle.com/datasets/Cornell-University/arxiv
+Make sure to update the path to your dataset in the search.py script.
+
 # Usage
 
 ## Example usage
+
+```bash
 from arxiv_rag_faiss import ArxivSearch
+```
 
 ## Initialize the search utility
 
