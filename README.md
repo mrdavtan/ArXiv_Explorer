@@ -29,18 +29,24 @@ cd <project-directory>
 # Install dependencies
 pip install -r requirements.txt
 ```
-## Usage
 
-# Example usage
+# Usage
+
+## Example usage
 from arxiv_rag_faiss import ArxivSearch
 
-# Initialize the search utility
-search_utility = ArxivSearch()
+## Initialize the search utility
 
-# Perform a search
+```bash
+search_utility = ArxivSearch()
+```
+
+## Perform a search
+
+```bash
 results = search_utility.search("I want to build an invisibility cloak like the one in Harry Potter")
 print(results)
-
+```
 
 ## Resources and Acknowledgments
 
