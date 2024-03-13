@@ -52,7 +52,7 @@ search_utility = ArxivSearch()
 ## Perform a search
 
 ```bash
-results = search_utility.search("I want to build an invisibility cloak like the one in Harry Potter")
+results = search_utility.search("I want to build a flying carpet using the latest in lighter than air fabrics and anti-gravity technology")
 print(results)
 ```
 
