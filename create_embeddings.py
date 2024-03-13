@@ -112,8 +112,10 @@ print("embeddings: ", embeddings[i])
 type(embeddings)
 
 #Save array in compressed format
-np.savez_compressed('compressed_array.npz', array_data=embeddings, chunk_list=chunk_list)
+#np.savez_compressed('compressed_array.npz', array_data=embeddings, chunk_list=chunk_list)
 
+np.save('embeddings.npy', embeddings)
+np.save('chunk_list.npy', chunk_list)
 
 df_data.to_csv('compressed_dataframe.csv.gz', compression='zip', index=False)
 
