@@ -56,6 +56,9 @@ results = search_utility.search("I want to build a flying carpet using the lates
 print(results)
 ```
 
+For more information about how to choose an index:
+https://github.com/facebookresearch/faiss/wiki/Guidelines-to-choose-an-index
+
 ## Resources and Acknowledgments
 
 This project was inspired by and is a direct application of concepts presented in the following resources:
@@ -67,10 +70,6 @@ This project was inspired by and is a direct application of concepts presented i
 - [Sentence Transformers Documentation](https://www.sbert.net/)
 
 Special thanks to the ArXiv team for maintaining the dataset and providing API access, making projects like ours possible.
-
-## Contributing
-
-Contributions to the ArXiv RAG FAISS Search Utility are welcome! Please read our contributing guidelines for more information on how you can contribute to this project.
 
 ## License
 
