@@ -30,7 +30,7 @@ cd <project-directory>
 pip install -r requirements.txt
 ```
 
-#Dataset
+# Dataset
 
 You will need the arxiv dataset which can be found at https://www.kaggle.com/datasets/Cornell-University/arxiv
 Make sure to update the path to your dataset in the search.py script.
