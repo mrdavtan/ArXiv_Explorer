@@ -56,7 +56,7 @@ def main(json_file, rank_list):
         if result:
             # Extract the PDF URL, arXiv index, and abstract
             pdf_url = result['File']
-            arxiv_index = pdf_url.split('/')[-1].split('.')[0]
+            arxiv_index = pdf_url.split('/')[-1]
             abstract = result['Abstract']
 
             # Extract a short title from the abstract
@@ -71,7 +71,7 @@ def main(json_file, rank_list):
                 sanitized_title = sanitized_title[:max_title_length]
 
             # Create the filename with the sanitized title and arXiv index
-            filename = f"{sanitized_title}_{arxiv_index}.pdf"
+            filename = f"{sanitized_title}_{arxiv_index}"
 
             # Download the PDF
             pdf_path = os.path.join('pdf_archive', filename)

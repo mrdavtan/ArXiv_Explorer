@@ -73,11 +73,11 @@ df_sorted = df_sorted.sort_values(by='cross_scores', ascending=False).reset_inde
 num_results = 5
 
 # Create the Search_Archive directory if it doesn't exist
-os.makedirs('Search_Archive', exist_ok=True)
+os.makedirs('search_archive', exist_ok=True)
 
 # Generate a unique filename based on the query
 filename = re.sub(r'\W+', '_', query_text) + '.json'
-file_path = os.path.join('Search_Archive', filename)
+file_path = os.path.join('search_archive', filename)
 
 # Create a list to store the search results
 search_results = []
