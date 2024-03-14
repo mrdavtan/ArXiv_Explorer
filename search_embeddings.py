@@ -8,11 +8,12 @@ import pandas as pd
 import uuid
 import re
 import argparse
+from datetime import datetime
 
 # Create an argument parser
 parser = argparse.ArgumentParser(description='Semantic Search')
 parser.add_argument('query', type=str, help='Query string')
-parser.add_argument('-n', '--num_results', type=int, default=5, help='Number of results to retrieve')
+parser.add_argument('-n', '--num_results', type=int, default=10, help='Number of results to retrieve (default: 10)')
 parser.add_argument('-v', '--verbose', action='store_true', help='Print the search results')
 args = parser.parse_args()
 
@@ -73,11 +74,17 @@ df_sorted = pd.DataFrame(results, columns=['original_index', 'cross_scores', 'pr
 df_sorted = df_sorted.sort_values(by='cross_scores', ascending=False).reset_index(drop=True)
 
 # Create the Search_Archive directory if it doesn't exist
-os.makedirs('Search_Archive', exist_ok=True)
+os.makedirs('search_archive', exist_ok=True)
 
-# Generate a unique filename based on the query
-filename = re.sub(r'\W+', '_', query_text) + '.json'
-file_path = os.path.join('Search_Archive', filename)
+# Sanitize the query string
+sanitized_query = re.sub(r'[^a-zA-Z0-9\s]', '', query_text.lower())
+
+# Get the current date and time
+current_datetime = datetime.now().strftime('%Y%m%d%H%M')
+
+# Generate a unique filename based on the sanitized query and current datetime
+filename = f"{sanitized_query}_{current_datetime}.json"
+file_path = os.path.join('search_archive', filename)
 
 # Create a list to store the search results
 search_results = []
@@ -111,9 +118,12 @@ json_data = {
     'results': search_results
 }
 
-# Save the JSON data to the file
+# Convert the JSON data to a string
+json_string = json.dumps(json_data, indent=4)
+
+# Save the JSON string to the file
 with open(file_path, 'w') as json_file:
-    json.dump(json_data, json_file, indent=4)
+    json_file.write(json_string)
 
 print(f"Search results saved to: {file_path}")
 
