@@ -48,6 +48,8 @@ df_data['abstract'] = df_data['abstract'].apply(clean_text)
 
 df_data['prepared_text'] = df_data['title'] + ' ' + df_data['abstract']
 
+df_data.to_csv('compressed_dataframe.csv.gz', compression='gzip', index=False)
+
 chunk_list = list(df_data['prepared_text'])
 
 # Create the embeddings
