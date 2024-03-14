@@ -7,6 +7,14 @@ import sys
 import pandas as pd
 import uuid
 import re
+import argparse
+
+# Create an argument parser
+parser = argparse.ArgumentParser(description='Semantic Search')
+parser.add_argument('query', type=str, help='Query string')
+parser.add_argument('-n', '--num_results', type=int, default=5, help='Number of results to retrieve')
+parser.add_argument('-v', '--verbose', action='store_true', help='Print the search results')
+args = parser.parse_args()
 
 # Load the SentenceTransformer model
 model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -38,19 +46,14 @@ print("Total embeddings in the index:", index.ntotal)
 # Adjust the nprobe parameter for search-time performance
 index.nprobe = 4
 
-# Get the query string from the command line argument
-if len(sys.argv) < 2:
-    print("Please provide a query string as a command line argument.")
-    sys.exit(1)
-query_text = sys.argv[1]
-
+query_text = args.query
 query = [query_text]
 
 # Vectorize the query string
 query_embedding = model.encode(query)
 
 # Set the number of outputs we want
-top_k = 10
+top_k = args.num_results
 
 # Run the query
 scores, index_vals = index.search(query_embedding, top_k)
@@ -69,9 +72,6 @@ results = list(zip(index_vals[0], cross_scores, pred_strings_list))
 df_sorted = pd.DataFrame(results, columns=['original_index', 'cross_scores', 'pred_text'])
 df_sorted = df_sorted.sort_values(by='cross_scores', ascending=False).reset_index(drop=True)
 
-# Set the number of results to display
-num_results = 5
-
 # Create the Search_Archive directory if it doesn't exist
 os.makedirs('Search_Archive', exist_ok=True)
 
@@ -86,7 +86,7 @@ search_results = []
 search_uuid = str(uuid.uuid4())
 
 # Prepare the search results
-for i in range(num_results):
+for i in range(top_k):
     text = df_sorted.loc[i, 'pred_text']
     original_index = df_sorted.loc[i, 'original_index']
     cross_score = df_sorted.loc[i, 'cross_scores']
@@ -116,3 +116,22 @@ with open(file_path, 'w') as json_file:
     json.dump(json_data, json_file, indent=4)
 
 print(f"Search results saved to: {file_path}")
+
+# Print the search results if the verbose flag is set
+if args.verbose:
+    print("Retrieved texts:")
+    for i in range(top_k):
+        text = df_sorted.loc[i, 'pred_text']
+        original_index = df_sorted.loc[i, 'original_index']
+        cross_score = df_sorted.loc[i, 'cross_scores']
+
+        arxiv_id = df_data.loc[original_index, 'id']
+        cat_text = df_data.loc[original_index, 'categories']
+
+        link_to_pdf = f'https://arxiv.org/pdf/{arxiv_id}'
+
+        print(f"Text {i+1} (Index: {original_index}, Score: {cross_score}):")
+        print('Link to PDF:', link_to_pdf)
+        print('Categories:', cat_text)
+        print('Abstract:', text)
+        print()
