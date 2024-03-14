@@ -71,7 +71,7 @@ def main(json_file, rank_list):
                 sanitized_title = sanitized_title[:max_title_length]
 
             # Create the filename with the sanitized title and arXiv index
-            filename = f"{sanitized_title}_{arxiv_index}"
+            filename = f"{sanitized_title}_{arxiv_index}.pdf"
 
             # Download the PDF
             pdf_path = os.path.join('pdf_archive', filename)
