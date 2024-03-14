@@ -3,6 +3,7 @@ import faiss
 import numpy as np
 import json
 from sentence_transformers import SentenceTransformer
+import sys
 
 # Load the SentenceTransformer model
 model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -27,9 +28,11 @@ index.add(embeddings)
 # Check the total number of embeddings in the index
 print("Total embeddings in the index:", index.ntotal)
 
-query_text = """
-I want to create a knowledge graph database in which the nodes can change context, complemented by RAG and an LLM
-"""
+# Get the query string from the command line argument
+if len(sys.argv) < 2:
+    print("Please provide a query string as a command line argument.")
+    sys.exit(1)
+query_text = sys.argv[1]
 
 query = [query_text]
 
@@ -37,7 +40,7 @@ query = [query_text]
 query_embedding = model.encode(query)
 
 # Set the number of outputs we want
-top_k = 3
+top_k = 10
 
 # Run the query
 scores, index_vals = index.search(query_embedding, top_k)
@@ -47,8 +50,13 @@ print("Scores:", scores)
 
 pred_indexes = index_vals[0]
 
-i = 0
-chunk_index = pred_indexes[i]
-text = metadata[chunk_index]
-print("Retrieved text:")
-print(text)
+print("Retrieved texts:")
+for i in range(top_k):
+    chunk_index = pred_indexes[i]
+    text = metadata[chunk_index]
+    print(f"Text {i+1}:")
+    print(text)
+    print()
+
+
+

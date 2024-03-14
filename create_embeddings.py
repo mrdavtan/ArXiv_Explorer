@@ -10,7 +10,7 @@ with open('category_map.json', 'r') as f:
 # Load the Arxiv metadata
 cols = ['id', 'title', 'abstract', 'categories']
 data = []
-file_name = '../../arxiv_data/arxiv-metadata-oai-snapshot.json'
+file_name = '../../db/arxiv_data/arxiv-metadata-oai-snapshot.json'
 
 with open(file_name, encoding='utf-8') as f:
     for line in f:
