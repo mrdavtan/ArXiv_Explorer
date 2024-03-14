@@ -10,138 +10,132 @@ import re
 import argparse
 from datetime import datetime
 
-# Create an argument parser
-parser = argparse.ArgumentParser(description='Semantic Search')
-parser.add_argument('query', type=str, help='Query string')
-parser.add_argument('-n', '--num_results', type=int, default=10, help='Number of results to retrieve (default: 10)')
-parser.add_argument('-v', '--verbose', action='store_true', help='Print the search results')
-args = parser.parse_args()
+def main(query_text, num_results, verbose):
+    # Load the SentenceTransformer model
+    model = SentenceTransformer("all-MiniLM-L6-v2")
 
-# Load the SentenceTransformer model
-model = SentenceTransformer("all-MiniLM-L6-v2")
+    # Load the embeddings and metadata from the .npy file
+    data = np.load('embeddings.npy', allow_pickle=True).item()
+    embeddings = data['embeddings']
+    metadata_array = data['metadata']
 
-# Load the embeddings and metadata from the .npy file
-data = np.load('embeddings.npy', allow_pickle=True).item()
-embeddings = data['embeddings']
-metadata_array = data['metadata']
+    # Convert the metadata array back to a dictionary
+    metadata = {row['index']: row['text'] for row in metadata_array}
 
-# Convert the metadata array back to a dictionary
-metadata = {row['index']: row['text'] for row in metadata_array}
+    # Load the compressed DataFrame
+    df_data = pd.read_csv('compressed_dataframe.csv.gz', compression='gzip')
+    print("Compressed DataFrame shape:", df_data.shape)
 
-# Load the compressed DataFrame
-df_data = pd.read_csv('compressed_dataframe.csv.gz', compression='gzip')
-print("Compressed DataFrame shape:", df_data.shape)
+    num_centroids = 5
+    embed_length = embeddings.shape[1]
 
-num_centroids = 5
-embed_length = embeddings.shape[1]
+    quantizer = faiss.IndexFlatL2(embed_length)
+    index = faiss.IndexIVFFlat(quantizer, embed_length, num_centroids)
 
-quantizer = faiss.IndexFlatL2(embed_length)
-index = faiss.IndexIVFFlat(quantizer, embed_length, num_centroids)
+    index.train(embeddings)
+    print("Index is trained:", index.is_trained)
 
-index.train(embeddings)
-print("Index is trained:", index.is_trained)
+    index.add(embeddings)
+    print("Total embeddings in the index:", index.ntotal)
 
-index.add(embeddings)
-print("Total embeddings in the index:", index.ntotal)
+    # Adjust the nprobe parameter for search-time performance
+    index.nprobe = 4
 
-# Adjust the nprobe parameter for search-time performance
-index.nprobe = 4
+    query = [query_text]
 
-query_text = args.query
-query = [query_text]
+    # Vectorize the query string
+    query_embedding = model.encode(query)
 
-# Vectorize the query string
-query_embedding = model.encode(query)
+    # Set the number of outputs we want
+    top_k = 10
 
-# Set the number of outputs we want
-top_k = args.num_results
+    # Run the query
+    scores, index_vals = index.search(query_embedding, top_k)
 
-# Run the query
-scores, index_vals = index.search(query_embedding, top_k)
+    print("Index values:", index_vals)
+    print("Scores:", scores)
 
-print("Index values:", index_vals)
-print("Scores:", scores)
+    # Re-ranking with CrossEncoder
+    cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
+    pred_strings_list = [metadata[item] for item in index_vals[0]]
+    cross_input_list = [[query[0], pred_text] for pred_text in pred_strings_list]
+    cross_scores = cross_encoder.predict(cross_input_list)
 
-# Re-ranking with CrossEncoder
-cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
-pred_strings_list = [metadata[item] for item in index_vals[0]]
-cross_input_list = [[query[0], pred_text] for pred_text in pred_strings_list]
-cross_scores = cross_encoder.predict(cross_input_list)
+    # Preparing results
+    results = list(zip(index_vals[0], cross_scores, pred_strings_list))
+    df_sorted = pd.DataFrame(results, columns=['original_index', 'cross_scores', 'pred_text'])
+    df_sorted = df_sorted.sort_values(by='cross_scores', ascending=False).reset_index(drop=True)
 
-# Preparing results
-results = list(zip(index_vals[0], cross_scores, pred_strings_list))
-df_sorted = pd.DataFrame(results, columns=['original_index', 'cross_scores', 'pred_text'])
-df_sorted = df_sorted.sort_values(by='cross_scores', ascending=False).reset_index(drop=True)
+    # Set the number of results to display
+    #num_results = 10
 
-# Create the Search_Archive directory if it doesn't exist
-os.makedirs('search_archive', exist_ok=True)
+    # Create the search_archive directory if it doesn't exist
+    os.makedirs('search_archive', exist_ok=True)
 
-# Sanitize the query string
-sanitized_query = re.sub(r'[^a-zA-Z0-9\s]', '', query_text.lower())
+    # Generate a unique filename based on the query
+    current_date = datetime.now().strftime('%Y%m%d%H%M')
+    filename = re.sub(r'\W+', '_', query_text) + '_' + current_date + '.json'
+    file_path = os.path.join('search_archive', filename)
 
-# Get the current date and time
-current_datetime = datetime.now().strftime('%Y%m%d%H%M')
+    # Create a list to store the search results
+    search_results = []
 
-# Generate a unique filename based on the sanitized query and current datetime
-filename = f"{sanitized_query}_{current_datetime}.json"
-file_path = os.path.join('search_archive', filename)
+    # Generate a UUID for the search
+    search_uuid = str(uuid.uuid4())
 
-# Create a list to store the search results
-search_results = []
-
-# Generate a UUID for the search
-search_uuid = str(uuid.uuid4())
-
-# Prepare the search results
-for i in range(top_k):
-    text = df_sorted.loc[i, 'pred_text']
-    original_index = df_sorted.loc[i, 'original_index']
-    cross_score = df_sorted.loc[i, 'cross_scores']
-
-    arxiv_id = df_data.loc[original_index, 'id']
-    cat_text = df_data.loc[original_index, 'categories']
-
-    link_to_pdf = f'https://arxiv.org/pdf/{arxiv_id}'
-
-    result = {
-        'Rank': f'{i+1} (Index: {original_index}, Score: {cross_score})',
-        'File': link_to_pdf,
-        'Categories': cat_text,
-        'Abstract': text
-    }
-    search_results.append(result)
-
-# Create the JSON data
-json_data = {
-    'id': search_uuid,
-    'query': query_text,
-    'results': search_results
-}
-
-# Convert the JSON data to a string
-json_string = json.dumps(json_data, indent=4)
-
-# Save the JSON string to the file
-with open(file_path, 'w') as json_file:
-    json_file.write(json_string)
-
-print(f"Search results saved to: {file_path}")
-
-# Print the search results if the verbose flag is set
-if args.verbose:
-    print("Retrieved texts:")
-    for i in range(top_k):
+    # Prepare the search results
+    for i in range(num_results):
         text = df_sorted.loc[i, 'pred_text']
         original_index = df_sorted.loc[i, 'original_index']
         cross_score = df_sorted.loc[i, 'cross_scores']
-
         arxiv_id = df_data.loc[original_index, 'id']
         cat_text = df_data.loc[original_index, 'categories']
-
         link_to_pdf = f'https://arxiv.org/pdf/{arxiv_id}'
 
-        print(f"Text {i+1} (Index: {original_index}, Score: {cross_score}):")
-        print('Link to PDF:', link_to_pdf)
-        print('Categories:', cat_text)
-        print('Abstract:', text)
-        print()
+        result = {
+            'Rank': f'{i+1} (Index: {original_index}, Score: {cross_score})',
+            'File': link_to_pdf,
+            'Categories': cat_text,
+            'Abstract': text
+        }
+        search_results.append(result)
+
+    # Create the JSON data
+    json_data = {
+        'id': search_uuid,
+        'query': query_text,
+        'results': search_results
+    }
+
+    # Save the JSON data to the file
+    with open(file_path, 'w') as json_file:
+        json.dump(json_data, json_file, indent=4)
+
+    print(f"Search results saved to: {file_path}")
+
+    # Print the search results if the verbose flag is set
+    if verbose:
+        print("Search Results:")
+        for result in search_results:
+            print(f"Rank: {result['Rank']}")
+            print(f"File: {result['File']}")
+            print(f"Categories: {result['Categories']}")
+            print(f"Abstract: {result['Abstract']}")
+            print()
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Search Embeddings')
+    parser.add_argument('query', type=str, help='Query string')
+    parser.add_argument('-n', '--num_results', type=int, default=10, help='Number of results to display (default: 10)')
+    parser.add_argument('-v', '--verbose', action='store_true', help='Print the search results')
+    args = parser.parse_args()
+
+    if len(sys.argv) < 2:
+        parser.print_usage()
+        sys.exit(1)
+
+    query_text = args.query
+    num_results = args.num_results
+    verbose = args.verbose
+
+    main(query_text, num_results, verbose)
