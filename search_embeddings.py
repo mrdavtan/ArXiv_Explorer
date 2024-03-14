@@ -30,7 +30,7 @@ index.add(embeddings)
 print("Total embeddings in the index:", index.ntotal)
 
 # Adjust the nprobe parameter for search-time performance
-index.nprobe = 4
+index.nprobe = 5
 
 # Get the query string from the command line argument
 if len(sys.argv) < 2:
@@ -68,7 +68,7 @@ df_data = pd.read_csv('compressed_dataframe.csv.gz', compression='gzip')
 print(df_data.shape)
 
 # Set the number of results to display
-num_results = 5
+num_results = 10
 
 # Printing top results
 print("Retrieved texts:")
