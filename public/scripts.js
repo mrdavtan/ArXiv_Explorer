@@ -1,26 +1,25 @@
-
+let currentView = 'summary';
+let searchResults = [];
+let summaryResults = [];
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Load JSON files on page load
-  loadJsonFiles();
-  loadSummaryFiles();
-
-// Search form submission
-document.getElementById('search-form').addEventListener('submit', event => {
-  event.preventDefault();
-  const query = document.getElementById('search-query').value;
-  const numResults = document.getElementById('num-results').value;
-  fetch('/search', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query, numResults })
-  })
-    .then(response => response.json())
-    .then(data => {
-      displayResults(data.summaryResults, 'summary');
-      displayResults(data.searchResults.results, 'abstract');
-    });
-});
+  // Search form submission
+  document.getElementById('search-form').addEventListener('submit', event => {
+    event.preventDefault();
+    const query = document.getElementById('search-query').value;
+    const numResults = document.getElementById('num-results').value;
+    fetch('/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, numResults })
+    })
+      .then(response => response.json())
+      .then(data => {
+        searchResults = data.searchResults.results;
+        summaryResults = data.summaryResults;
+        displayResults();
+      });
+  });
 
   // Download form submission
   document.getElementById('download-form').addEventListener('submit', event => {
@@ -38,74 +37,18 @@ document.getElementById('search-form').addEventListener('submit', event => {
   });
 });
 
-function loadJsonFiles() {
-  fetch('/search-archive')
-    .then(response => response.json())
-    .then(files => {
-      const select = document.getElementById('json-files');
-      select.innerHTML = '';
-      files.forEach(file => {
-        const option = document.createElement('option');
-        option.value = file;
-        option.textContent = file;
-        select.appendChild(option);
-      });
-    });
+function toggleView() {
+  currentView = currentView === 'summary' ? 'abstract' : 'summary';
+  displayResults();
 }
 
-function loadSummaryFiles() {
-  fetch('/summary-archive')
-    .then(response => response.json())
-    .then(files => {
-      const select = document.getElementById('summary-files');
-      select.innerHTML = '';
-      files.forEach(file => {
-        const option = document.createElement('option');
-        option.value = file;
-        option.textContent = file;
-        select.appendChild(option);
-      });
-    });
-}
-
-function loadJsonFile() {
-  const selectedFile = document.getElementById('json-files').value;
-  fetch(`/search-archive/${selectedFile}`)
-    .then(response => response.json())
-    .then(data => {
-      displayResults(data.results, 'abstract');
-    });
-}
-
-function loadSummaryFile() {
-  const selectedFile = document.getElementById('summary-files').value;
-  fetch(`/summary-archive/${selectedFile}`)
-    .then(response => response.json())
-    .then(data => {
-      displayResults(data, 'summary');
-    });
-}
-
-function summarizeResults(results) {
-  // Implement the logic to summarize the results using the summarize.py script
-  // You can send a request to the server with the results and receive the summaries
-  // For demonstration purposes, let's assume the summaries are generated instantly
-  const summaries = results.map(result => ({
-    Rank: result.Rank,
-    File: result.File,
-    Categories: result.Categories,
-    Summary: 'This is a placeholder summary for demonstration purposes.'
-  }));
-  return summaries;
-}
-
-function displayResults(results, type) {
+function displayResults() {
   const container = document.getElementById('results-container');
   let html = '';
-  if (type === 'summary') {
+  if (currentView === 'summary') {
     html = `
       <h3>Summary Results</h3>
-      ${results.map(result => `
+      ${summaryResults.map(result => `
         <div class="result">
           <p><strong>Rank:</strong> ${result.Rank}</p>
           <p><strong>File:</strong> <a href="${result.File}" target="_blank">${result.File}</a></p>
@@ -115,10 +58,10 @@ function displayResults(results, type) {
         <hr>
       `).join('')}
     `;
-  } else if (type === 'abstract') {
+  } else if (currentView === 'abstract') {
     html = `
       <h3>Abstract Results</h3>
-      ${results.map(result => `
+      ${searchResults.map(result => `
         <div class="result">
           <p><strong>Rank:</strong> ${result.Rank}</p>
           <p><strong>File:</strong> <a href="${result.File}" target="_blank">${result.File}</a></p>
