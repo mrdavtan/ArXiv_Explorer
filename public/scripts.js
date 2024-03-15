@@ -85,7 +85,6 @@ function loadJsonFile() {
   }
 }
 
-
 function loadJsonFiles() {
   console.log('loadJsonFiles function called');
   const endpoint = currentView === 'summary' ? '/summary-archive' : '/search-archive';
@@ -94,26 +93,38 @@ function loadJsonFiles() {
     .then(files => {
       const select = document.getElementById('json-files');
       select.innerHTML = '';
-      files.forEach(file => {
-        const option = document.createElement('option');
-        option.value = file;
-        option.textContent = file;
-        select.appendChild(option);
+
+      const filePromises = files.map(file => {
+        const fileEndpoint = currentView === 'summary' ? `/summary-archive/${file}` : `/search-archive/${file}`;
+        return fetch(fileEndpoint).then(response => response.json());
       });
 
-      console.log('Selected file UUID:', selectedFileUUID);
+      Promise.all(filePromises)
+        .then(jsonDataList => {
+          jsonDataList.forEach((jsonData, index) => {
+            const option = document.createElement('option');
+            option.value = files[index];
+            option.textContent = files[index];
+            select.appendChild(option);
 
-      // Set the selected file based on the stored UUID
-      if (selectedFileUUID) {
-        const selectedFile = files.find(file => file.includes(selectedFileUUID));
-        if (selectedFile) {
-          select.value = selectedFile;
-          console.log('Matching file found:', selectedFile);
-        } else {
-          console.log('No matching file found for UUID:', selectedFileUUID);
-        }
-      }
+            if (jsonData.id === selectedFileUUID) {
+              select.value = files[index];
+              console.log('Matching file found:', files[index]);
+            }
+          });
+        })
+        .catch(error => {
+          console.error('Error loading JSON files:', error);
+        });
     });
+}
+
+function logDropdownOptions() {
+  const select = document.getElementById('json-files');
+  console.log('Dropdown options:');
+  for (let i = 0; i < select.options.length; i++) {
+    console.log(select.options[i].value);
+  }
 }
 
 function toggleView() {
