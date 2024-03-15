@@ -1,6 +1,6 @@
 import os
 import json
-from openai import OpenAI
+from openai import OpenAI, ChatCompletion
 from glob import glob
 
 def get_latest_json_file():
@@ -10,7 +10,7 @@ def get_latest_json_file():
     latest_file = max(json_files, key=os.path.getmtime)
     return latest_file
 
-def extract_title(abstract):
+def extract_title(abstract: str) -> str:
     sentences = abstract.split('.')
     if sentences:
         first_sentence = sentences[0].strip()
@@ -18,7 +18,7 @@ def extract_title(abstract):
     else:
         return ''
 
-def generate_title(client: OpenAI, first_sentence: str) -> str:
+def generate_title(client: ChatCompletion, first_sentence: str) -> str:
     prompt = f"""
     Given the first sentence of an abstract of a research paper, identify the official title and truncate any other text.
 
@@ -34,7 +34,7 @@ def generate_title(client: OpenAI, first_sentence: str) -> str:
     title = completion.choices[0].message.content.strip()
     return title
 
-def summarize_abstract(client: OpenAI, abstract: str) -> str:
+def summarize_abstract(client: ChatCompletion, abstract: str) -> str:
     prompt = f"""
     Write a one sentence summary of the abstract at the level of a very smart high school student or a 2nd year college student.
 
@@ -50,7 +50,7 @@ def summarize_abstract(client: OpenAI, abstract: str) -> str:
     summary = completion.choices[0].message.content.strip()
     return summary
 
-def summarize_abstracts(json_file_path: str, client: OpenAI) -> list:
+def summarize_abstracts(json_file_path: str, client: ChatCompletion) -> list:
     if not os.path.exists(json_file_path):
         raise FileNotFoundError("The specified JSON file does not exist.")
 
@@ -76,3 +76,12 @@ def summarize_abstracts(json_file_path: str, client: OpenAI) -> list:
 
     return summaries
 
+if __name__ == '__main__':
+    # Example usage:
+    # client = OpenAI(api_key='your-api-key').ChatCompletion()
+    # json_file = get_latest_json_file()
+    # if json_file:
+    #     summaries = summarize_abstracts(json_file, client)
+    #     for summary in summaries:
+    #         print(summary)
+    pass
