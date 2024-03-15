@@ -36,7 +36,14 @@ window.onload = function() {
 
 function loadJsonFiles() {
     console.log('loadJsonFiles called');
-    fetch('/load_json_files')
+    const filePath = document.getElementById('json-files').value;
+    fetch('/load_json_files', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ json_file_path: filePath })
+    })
     .then(response => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -45,17 +52,7 @@ function loadJsonFiles() {
     })
     .then(data => {
         const resultsElement = document.getElementById('search-results');
-        resultsElement.innerHTML = '';
-        data.files.forEach(file => {
-            const p = document.createElement('p');
-            p.textContent = file;
-            resultsElement.appendChild(p);
-            const br = document.createElement('br');
-            resultsElement.appendChild(br);
-        });
-    })
-    .then(() => {
-        summarizeAbstracts();
+        resultsElement.innerHTML = JSON.stringify(data, null, 2);
     })
     .catch(e => {
         console.log('There was a problem with the fetch operation: ' + e.message);
