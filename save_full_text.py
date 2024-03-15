@@ -5,18 +5,18 @@ import re
 import requests
 from glob import glob
 
-def sanitize_title(title):
+def sanitize_title(title: str) -> str:
     # Remove special characters and replace spaces with underscores
     sanitized_title = re.sub(r'[^a-zA-Z0-9\s]', '', title)
     sanitized_title = re.sub(r'\s+', '_', sanitized_title)
     return sanitized_title
 
-def download_pdf(url, filename):
+def download_pdf(url: str, filename: str) -> str:
     response = requests.get(url)
     with open(filename, 'wb') as file:
         file.write(response.content)
 
-def get_latest_json_file():
+def get_latest_json_file(search_dir='search_archive') -> str:
     # Get a list of all JSON files in the search_archive directory
     json_files = glob(os.path.join('search_archive', '*.json'))
 
@@ -28,7 +28,7 @@ def get_latest_json_file():
 
     return latest_file
 
-def extract_short_title(abstract):
+def extract_short_title(abstract: str) -> str:
     # Extract the first sentence or a short phrase from the abstract
     sentences = abstract.split('.')
     if len(sentences) > 0:
@@ -37,7 +37,7 @@ def extract_short_title(abstract):
     else:
         return ''
 
-def main(json_file, rank_list):
+def save_full_texts(json_file_path: str, rank_list: list, download_dir='pdf_archive') -> list:
     # Load the JSON file
     with open(json_file, 'r') as file:
         data = json.load(file)
@@ -97,3 +97,12 @@ if __name__ == '__main__':
         sys.exit(1)
 
     main(json_file, rank_list)
+if __name__ == '__main__':
+    # Example usage:
+    # rank_list = [1, 2, 3]  # Ranks of the papers to download
+    # json_file = get_latest_json_file()
+    # if json_file:
+    #     downloaded_files = save_full_texts(json_file, rank_list)
+    #     for file_path in downloaded_files:
+    #         print(f"Downloaded: {file_path}")
+    pass
