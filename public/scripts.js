@@ -3,7 +3,10 @@ let searchResults = [];
 let summaryResults = [];
 let selectedFileUUID = '';
 
+console.log('Script loaded');
+
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOMContentLoaded event fired');
   loadJsonFiles();
 
   // Search form submission
@@ -40,7 +43,51 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+function loadJsonFile() {
+  console.log('loadJsonFile function called');
+  const selectedFile = document.getElementById('json-files').value;
+  console.log('Selected file:', selectedFile);
+
+  if (selectedFile) {
+    const endpoint = currentView === 'summary' ? `/summary-archive/${selectedFile}` : `/search-archive/${selectedFile}`;
+    console.log('Fetching data from:', endpoint);
+
+    fetch(endpoint)
+      .then(response => {
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Loaded JSON data:', data);
+
+        if (data.id) {
+          selectedFileUUID = data.id;
+          console.log('Extracted UUID:', selectedFileUUID);
+        } else {
+          console.log('No UUID found in the loaded JSON data');
+        }
+
+        if (currentView === 'summary') {
+          searchResults = []; // Clear previous search results
+          summaryResults = data.results;
+        } else {
+          searchResults = data.results;
+          summaryResults = []; // Clear previous summary results
+        }
+        displayResults();
+      })
+      .catch(error => {
+        console.error('Error loading JSON file:', error);
+      });
+  }
+}
+
+
 function loadJsonFiles() {
+  console.log('loadJsonFiles function called');
   const endpoint = currentView === 'summary' ? '/summary-archive' : '/search-archive';
   fetch(endpoint)
     .then(response => response.json())
@@ -54,53 +101,32 @@ function loadJsonFiles() {
         select.appendChild(option);
       });
 
+      console.log('Selected file UUID:', selectedFileUUID);
+
       // Set the selected file based on the stored UUID
       if (selectedFileUUID) {
         const selectedFile = files.find(file => file.includes(selectedFileUUID));
         if (selectedFile) {
           select.value = selectedFile;
+          console.log('Matching file found:', selectedFile);
+        } else {
+          console.log('No matching file found for UUID:', selectedFileUUID);
         }
       }
     });
 }
 
-function loadJsonFile() {
-  const selectedFile = document.getElementById('json-files').value;
-  if (selectedFile) {
-    // Extract the UUID from the selected file name
-    const regex = /[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/i;
-    const match = selectedFile.match(regex);
-    if (match) {
-      selectedFileUUID = match[0];
-    }
-
-    const endpoint = currentView === 'summary' ? `/summary-archive/${selectedFile}` : `/search-archive/${selectedFile}`;
-    fetch(endpoint)
-      .then(response => response.json())
-      .then(data => {
-        if (currentView === 'summary') {
-          searchResults = []; // Clear previous search results
-          summaryResults = data.results;
-        } else {
-          searchResults = data.results;
-          summaryResults = []; // Clear previous summary results
-        }
-        displayResults();
-      })
-      .catch(error => {
-        console.error('Error loading JSON file:', error);
-      });
-  } else {
-    alert('Please select a JSON file from the dropdown.');
-  }
-}
-
 function toggleView() {
+  console.log('toggleView function called');
   currentView = currentView === 'summary' ? 'abstract' : 'summary';
   const toggleButton = document.getElementById('toggle-view-btn');
   toggleButton.textContent = currentView === 'summary' ? 'Abstract' : 'Summary';
   loadJsonFiles();
-  loadJsonFile();
+
+  // Trigger the loadJsonFile function after a short delay to allow the dropdown to update
+  setTimeout(() => {
+    loadJsonFile();
+  }, 100);
 }
 
 function displayResults() {
