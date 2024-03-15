@@ -18,7 +18,7 @@ def extract_title(abstract):
     else:
         return ''
 
-def generate_title(client, first_sentence):
+def generate_title(client: OpenAI, first_sentence: str) -> str:
     prompt = f"""
     Given the first sentence of an abstract of a research paper, identify the official title and truncate any other text.
 
@@ -34,7 +34,7 @@ def generate_title(client, first_sentence):
     title = completion.choices[0].message.content.strip()
     return title
 
-def summarize_abstract(client, abstract):
+def summarize_abstract(client: OpenAI, abstract: str) -> str:
     prompt = f"""
     Write a one sentence summary of the abstract at the level of a very smart high school student or a 2nd year college student.
 
@@ -50,16 +50,14 @@ def summarize_abstract(client, abstract):
     summary = completion.choices[0].message.content.strip()
     return summary
 
-def main():
-    client = OpenAI()  # Initialize the OpenAI client
-    json_file = get_latest_json_file()
-    if json_file is None:
-        print("No JSON files found in the search_archive directory.")
-        return
+def summarize_abstracts(json_file_path: str, client: OpenAI) -> list:
+    if not os.path.exists(json_file_path):
+        raise FileNotFoundError("The specified JSON file does not exist.")
 
-    with open(json_file, 'r') as file:
+    with open(json_file_path, 'r') as file:
         data = json.load(file)
 
+    summaries = []
     for i, result in enumerate(data['results'], start=1):
         abstract = result['Abstract']
         first_sentence = extract_title(abstract)  # Extract the first sentence from the abstract
@@ -70,9 +68,11 @@ def main():
         # Summarize the abstract
         summary = summarize_abstract(client, abstract)
 
-        print(f"{i}. Title: {title}")
-        print(f"   Summary: {summary}\n")
+        summaries.append({
+            'index': i,
+            'title': title,
+            'summary': summary
+        })
 
-if __name__ == '__main__':
-    main()
+    return summaries
 
