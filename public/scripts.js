@@ -63,9 +63,11 @@ function loadJsonFile() {
       .then(response => response.json())
       .then(data => {
         if (currentView === 'summary') {
+          searchResults = []; // Clear previous search results
           summaryResults = data;
         } else {
           searchResults = data.results;
+          summaryResults = []; // Clear previous summary results
         }
         displayResults();
       })
