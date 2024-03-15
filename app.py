@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask import url_for
 from search_embeddings import search_embeddings
 from save_full_text import save_full_texts, get_latest_json_file
 from summarize import summarize_abstracts
