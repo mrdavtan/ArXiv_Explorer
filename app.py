@@ -6,6 +6,12 @@ from openai import ChatCompletion, OpenAI
 from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
+app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon.ico'))
+
+@app.route('/')
+def index():
+    return "Welcome to the Flask application!"
+
 @app.errorhandler(Exception)
 def handle_exception(e):
     # Handle generic exceptions
