@@ -35,6 +35,7 @@ window.onload = function() {
 }
 
 function loadJsonFiles() {
+    console.log('loadJsonFiles called');
     fetch('/load_json_files')
     .then(response => {
         if (!response.ok) {

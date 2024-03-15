@@ -72,6 +72,7 @@ import os
 def load_json_files():
     try:
         files = os.listdir('search_archive')
+        app.logger.info('Files: %s', files)
         if not files:
             raise FileNotFoundError('No files found in search_archive directory')
         return jsonify({'files': files})
