@@ -7,14 +7,6 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Arxiv Paper Explorer</h1>
-    <div id="summarize-section">
-        <h2>Summarize Abstracts</h2>
-        <select id="json-files"></select>
-        <button onclick="loadJsonFiles()">Load JSON Files</button>
-        <button onclick="summarizeAbstracts()">Summarize</button>
-        <div id="summarize-results"></div>
-    </div>
     <script src="scripts.js"></script>
 </body>
 </html>
@@ -32,6 +24,8 @@
         <h2>Search Papers</h2>
         <input type="text" id="search-query" placeholder="Enter search query">
         <button onclick="searchPapers()">Search</button>
+        <select id="json-files"></select>
+        <button onclick="loadJsonFiles()">Load JSON Files</button>
         <pre id="search-results"></pre>
     </div>
 
@@ -42,11 +36,5 @@
         <pre id="download-results"></pre>
     </div>
 
-    <div id="summarize-section">
-        <h2>Summarize Abstracts</h2>
-        <input type="text" id="summarize-file" placeholder="Enter path to JSON file">
-        <button onclick="summarizeAbstracts()">Summarize</button>
-        <pre id="summarize-results"></pre>
-    </div>
 </body>
 </html>
