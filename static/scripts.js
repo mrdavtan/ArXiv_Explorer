@@ -42,6 +42,7 @@ window.onload = function() {
     .then(data => {
         console.log('Received response from /load_json_files: ', data);
         const dropdown = document.getElementById('json-files');
+        dropdown.innerHTML = ''; // Clear the dropdown
         data.files.forEach(file => {
             const option = document.createElement('option');
             option.text = file;
