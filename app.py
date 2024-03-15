@@ -8,9 +8,11 @@ from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
 
+from flask import render_template
+
 @app.route('/')
 def index():
-    return "Welcome to the Flask application!"
+    return render_template('index.html')
 
 from flask import send_from_directory
 import os
