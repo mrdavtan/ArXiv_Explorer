@@ -30,7 +30,7 @@ function downloadPapers() {
     });
 }
 
-function loadJsonFiles() {
+window.onload = function loadJsonFiles() {
     fetch('/load_json_files')
     .then(response => response.json())
     .then(data => {
