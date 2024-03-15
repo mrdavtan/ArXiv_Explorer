@@ -31,7 +31,16 @@ function downloadPapers() {
 }
 
 window.onload = function() {
-    loadJsonFiles();
+    fetch('/load_json_files')
+    .then(response => response.json())
+    .then(data => {
+        const dropdown = document.getElementById('json-files');
+        data.files.forEach(file => {
+            const option = document.createElement('option');
+            option.text = file;
+            dropdown.add(option);
+        });
+    });
 }
 
 function loadJsonFiles() {
