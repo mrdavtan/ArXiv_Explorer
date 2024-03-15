@@ -8,7 +8,7 @@ import re
 from datetime import datetime
 
 def get_latest_json_file():
-    json_files = glob(os.path.join('../search_archive', '*.json'))
+    json_files = glob(os.path.join('/public/search_archive', '*.json'))
     if not json_files:
         return None
     latest_file = max(json_files, key=os.path.getmtime)
@@ -55,9 +55,9 @@ def summarize_abstract(client, abstract):
 def save_summary(query, summary_results, uuid):
     current_date = datetime.now().strftime('%Y%m%d%H%M')
     filename = re.sub(r'\W+', '_', query) + '_' + current_date + '.json'
-    file_path = os.path.join('../summary_archive', filename)
+    file_path = os.path.join('/public/summary_archive', filename)
 
-    os.makedirs('../summary_archive', exist_ok=True)
+    os.makedirs('/public/summary_archive', exist_ok=True)
 
     summary_data = {
         'id': uuid,
@@ -73,7 +73,7 @@ def save_summary(query, summary_results, uuid):
 def main(file_name):
     client = OpenAI()  # Initialize the OpenAI client
 
-    json_file = os.path.join('../search_archive', file_name)
+    json_file = os.path.join('/public/search_archive', file_name)
     if not os.path.isfile(json_file):
         print(f"File not found: {json_file}")
         return

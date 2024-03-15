@@ -10,6 +10,8 @@ import re
 import argparse
 from datetime import datetime
 
+os.chdir('/home/davtan/code/retrievers/arxiv_faiss/scripts/')
+
 def main(query_text, num_results, verbose):
     # Load the SentenceTransformer model
     model = SentenceTransformer("all-MiniLM-L6-v2")

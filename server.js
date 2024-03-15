@@ -11,8 +11,15 @@ const upload = multer();
 // Set up EJS as the view engine
 app.set('view engine', 'ejs');
 
+app.use('/scripts', express.static(path.join(__dirname, 'scripts')));
+const searchArchiveDir = path.join(__dirname, 'scripts', 'search_archive');
+const summaryArchiveDir = path.join(__dirname, 'scripts', 'summary_archive');
+
+
 // Serve static files from the public folder
 app.use(express.static('public'));
+
+//app.use('./scripts', express.static('scripts'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -41,7 +48,7 @@ app.post('/search', (req, res) => {
     console.log('Search script executed successfully');
 
     // Read the latest search JSON file
-    const latestFile = getLatestJsonFile('/public/search_archive');
+    const latestFile = getLatestJsonFile('search_archive');
     if (latestFile) {
       fs.readFile(latestFile, 'utf8', (error, data) => {
         if (error) {
@@ -61,7 +68,7 @@ app.post('/search', (req, res) => {
           console.log('Summarize script executed successfully');
 
           // Read the latest summary JSON file
-          const latestSummaryFile = getLatestJsonFile('public/summary_archive');
+          const latestSummaryFile = getLatestJsonFile('summary_archive');
           if (latestSummaryFile) {
             fs.readFile(latestSummaryFile, 'utf8', (error, data) => {
               if (error) {
@@ -96,11 +103,11 @@ function getLatestJsonFile(directory) {
   return `${directory}/${latestFile}`;
 }
 
-app.get('/search-archive', (req, res) => {
-  const archiveDir = 'public/search_archive';
-  console.log(`Reading search archive directory: ${archiveDir}`);
+app.get('search-archive', (req, res) => {
+  const searchArchiveDir = path.join(__dirname, 'scripts', 'search_archive');
+  console.log(`Reading search archive directory: ${searchArchiveDir}`);
 
-  fs.readdir(archiveDir, (error, files) => {
+  fs.readdir(searchArchiveDir, (error, files) => {
     if (error) {
       console.error(`Error reading search archive directory: ${error}`);
       res.status(500).send('Error reading search archive directory');
@@ -114,7 +121,7 @@ app.get('/search-archive', (req, res) => {
 
 app.get('/search-archive/:file', (req, res) => {
   const file = req.params.file;
-  const filePath = path.join(__dirname, 'public/search_archive', file);
+  const filePath = path.join(__dirname, 'scripts', 'search_archive', file);
   console.log(`Reading JSON file: ${filePath}`);
 
   fs.readFile(filePath, 'utf8', (error, data) => {
@@ -130,10 +137,8 @@ app.get('/search-archive/:file', (req, res) => {
 });
 
 app.get('/summary-archive', (req, res) => {
-  const archiveDir = 'public/summary_archive';
-  console.log(`Reading summary archive directory: ${archiveDir}`);
-
-  fs.readdir(archiveDir, (error, files) => {
+  const summaryArchiveDir = path.join(__dirname, 'scripts', 'summary_archive');
+  fs.readdir(summaryArchiveDir, (error, files) => {
     if (error) {
       console.error(`Error reading summary archive directory: ${error}`);
       res.status(500).send('Error reading summary archive directory');
@@ -147,7 +152,7 @@ app.get('/summary-archive', (req, res) => {
 
 app.get('/summary-archive/:file', (req, res) => {
   const file = req.params.file;
-  const filePath = path.join(__dirname, 'public/summary_archive', file);
+  const filePath = path.join(__dirname, 'scripts', 'summary_archive', file);
   console.log(`Reading JSON file: ${filePath}`);
 
   fs.readFile(filePath, 'utf8', (error, data) => {
