@@ -1,6 +1,7 @@
 let currentView = 'summary';
 let searchResults = [];
 let summaryResults = [];
+let selectedFileUUID = '';
 
 document.addEventListener('DOMContentLoaded', () => {
   loadJsonFiles();
@@ -52,19 +53,34 @@ function loadJsonFiles() {
         option.textContent = file;
         select.appendChild(option);
       });
+
+      // Set the selected file based on the stored UUID
+      if (selectedFileUUID) {
+        const selectedFile = files.find(file => file.includes(selectedFileUUID));
+        if (selectedFile) {
+          select.value = selectedFile;
+        }
+      }
     });
 }
 
 function loadJsonFile() {
   const selectedFile = document.getElementById('json-files').value;
   if (selectedFile) {
+    // Extract the UUID from the selected file name
+    const regex = /[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/i;
+    const match = selectedFile.match(regex);
+    if (match) {
+      selectedFileUUID = match[0];
+    }
+
     const endpoint = currentView === 'summary' ? `/summary-archive/${selectedFile}` : `/search-archive/${selectedFile}`;
     fetch(endpoint)
       .then(response => response.json())
       .then(data => {
         if (currentView === 'summary') {
           searchResults = []; // Clear previous search results
-          summaryResults = data;
+          summaryResults = data.results;
         } else {
           searchResults = data.results;
           summaryResults = []; // Clear previous summary results
@@ -84,7 +100,7 @@ function toggleView() {
   const toggleButton = document.getElementById('toggle-view-btn');
   toggleButton.textContent = currentView === 'summary' ? 'Abstract' : 'Summary';
   loadJsonFiles();
-  displayResults();
+  loadJsonFile();
 }
 
 function displayResults() {

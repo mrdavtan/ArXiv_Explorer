@@ -1,12 +1,14 @@
 import os
+import sys
 import json
 from openai import OpenAI
+import argparse
 from glob import glob
 import re
 from datetime import datetime
 
 def get_latest_json_file():
-    json_files = glob(os.path.join('search_archive', '*.json'))
+    json_files = glob(os.path.join('../search_archive', '*.json'))
     if not json_files:
         return None
     latest_file = max(json_files, key=os.path.getmtime)
@@ -50,30 +52,37 @@ def summarize_abstract(client, abstract):
     summary = completion.choices[0].message.content.strip()
     return summary
 
-def save_summary(query, summary_results):
-    current_date = datetime.now().strftime('%Y%m%d%H%M%S')
+def save_summary(query, summary_results, uuid):
+    current_date = datetime.now().strftime('%Y%m%d%H%M')
     filename = re.sub(r'\W+', '_', query) + '_' + current_date + '.json'
-    file_path = os.path.join('summary_archive', filename)
+    file_path = os.path.join('../summary_archive', filename)
 
-    os.makedirs('summary_archive', exist_ok=True)
+    os.makedirs('../summary_archive', exist_ok=True)
+
+    summary_data = {
+        'id': uuid,
+        'query': query,
+        'results': summary_results
+    }
 
     with open(file_path, 'w') as json_file:
-        json.dump(summary_results, json_file, indent=4)
+        json.dump(summary_data, json_file, indent=4)
 
     print(f"Summary saved to: {file_path}")
 
-def main():
+def main(file_name):
     client = OpenAI()  # Initialize the OpenAI client
 
-    json_file = get_latest_json_file()
-    if json_file is None:
-        print("No JSON files found in the search_archive directory.")
+    json_file = os.path.join('../search_archive', file_name)
+    if not os.path.isfile(json_file):
+        print(f"File not found: {json_file}")
         return
 
     with open(json_file, 'r') as file:
         data = json.load(file)
 
     query = data['query']
+    uuid = data['id']  # Get the UUID from the abstract JSON file
     summary_results = []
 
     for result in data['results']:
@@ -95,7 +104,17 @@ def main():
         }
         summary_results.append(summary_result)
 
-    save_summary(query, summary_results)
+    save_summary(query, summary_results, uuid)
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='Summarize an abstract JSON file')
+    parser.add_argument('file_name', type=str, help='Name of the abstract JSON file to summarize')
+
+    if len(sys.argv) < 2:
+        parser.print_usage()
+        print("Please provide the name of the abstract JSON file to summarize.")
+        sys.exit(1)
+
+    args = parser.parse_args()
+
+    main(args.file_name)
