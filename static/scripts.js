@@ -36,7 +36,12 @@ window.onload = function() {
 
 function loadJsonFiles() {
     fetch('/load_json_files')
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         const dropdown = document.getElementById('json-files');
         dropdown.innerHTML = '';
@@ -45,6 +50,9 @@ function loadJsonFiles() {
             option.textContent = file;
             dropdown.appendChild(option);
         });
+    })
+    .catch(e => {
+        console.log('There was a problem with the fetch operation: ' + e.message);
     });
 }
 

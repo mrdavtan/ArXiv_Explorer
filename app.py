@@ -72,6 +72,8 @@ import os
 def load_json_files():
     try:
         files = os.listdir('search_archive')
+        if not files:
+            raise FileNotFoundError('No files found in search_archive directory')
         return jsonify({'files': files})
     except Exception as e:
         return jsonify(error=str(e)), 400
