@@ -73,9 +73,9 @@ def main(query_text, num_results, verbose):
     os.makedirs('search_archive', exist_ok=True)
 
     # Generate a unique filename based on the query
-    current_date = datetime.now().strftime('%Y%m%d%H%M')
-    filename = re.sub(r'\W+', '_', query_text) + '_' + current_date + '.json'
-    file_path = os.path.join('search_archive', filename)
+    # current_date = datetime.now().strftime('%Y%m%d%H%M')
+    # filename = re.sub(r'\W+', '_', query_text) + '_' + current_date + '.json'
+    # file_path = os.path.join('search_archive', filename)
 
     # Create a list to store the search results
     search_results = []
@@ -108,10 +108,10 @@ def main(query_text, num_results, verbose):
     }
 
     # Save the JSON data to the file
-    with open(file_path, 'w') as json_file:
-        json.dump(json_data, json_file, indent=4)
+    # with open(file_path, 'w') as json_file:
+    #     json.dump(json_data, json_file, indent=4)
 
-    print(f"Search results saved to: {file_path}")
+    # print(f"Search results saved to: {file_path}")
 
     # Print the search results if the verbose flag is set
     if verbose:
