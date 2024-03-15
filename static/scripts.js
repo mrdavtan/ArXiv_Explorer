@@ -52,6 +52,9 @@ function loadJsonFiles() {
             dropdown.appendChild(option);
         });
     })
+    .then(() => {
+        summarizeAbstracts();
+    })
     .catch(e => {
         console.log('There was a problem with the fetch operation: ' + e.message);
     });
