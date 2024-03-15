@@ -12,9 +12,9 @@ app = Flask(__name__)
 def index():
     return "Welcome to the Flask application!"
 
-@app.errorhandler(Exception)
-def handle_exception(e):
-    # Handle generic exceptions
+#@app.errorhandler(Exception)
+#def handle_exception(e):
+#    # Handle generic exceptions
 
 @app.before_first_request
 def setup():
