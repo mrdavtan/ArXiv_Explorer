@@ -16,13 +16,15 @@ def index():
 #def handle_exception(e):
 #    # Handle generic exceptions
 
-@app.before_first_request
-def setup():
-    app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon.ico'))
-
+@app.errorhandler(Exception)
+def handle_exception(e):
     if isinstance(e, HTTPException):
         return jsonify(error=str(e)), e.code
     return jsonify(error=str(e)), 500
+
+@app.before_first_request
+def setup():
+    app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon.ico'))
 
 # Endpoint for searching embeddings
 @app.route('/search', methods=['POST'])
