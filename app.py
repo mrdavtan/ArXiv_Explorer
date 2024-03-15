@@ -68,11 +68,14 @@ def summarize():
 
 import os
 
-@app.route('/load_json_files', methods=['GET'])
+@app.route('/load_json_files', methods=['POST'])
 def load_json_files():
     try:
-        json_files = os.listdir('search_archive')
-        return jsonify({'files': json_files})
+        data = request.json
+        file_name = data['file_name']
+        with open(f'search_archive/{file_name}', 'r') as f:
+            file_contents = json.load(f)
+        return jsonify(file_contents)
     except Exception as e:
         return jsonify(error=str(e)), 400
 

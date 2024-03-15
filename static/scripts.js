@@ -56,13 +56,13 @@ window.onload = function() {
 
 function loadJsonFiles() {
     console.log('loadJsonFiles called');
-    const filePath = document.getElementById('json-files').value;
+    const fileName = document.getElementById('json-files').value;
     fetch('/load_json_files', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ json_file_path: filePath })
+        body: JSON.stringify({ file_name: fileName })
     })
     .then(response => {
         if (!response.ok) {
@@ -72,12 +72,7 @@ function loadJsonFiles() {
     })
     .then(data => {
         const resultsElement = document.getElementById('search-results');
-        resultsElement.innerHTML = '';
-        data.forEach(item => {
-            const p = document.createElement('p');
-            p.textContent = JSON.stringify(item, null, 2);
-            resultsElement.appendChild(p);
-        });
+        resultsElement.innerHTML = JSON.stringify(data, null, 2);
     })
     .catch(e => {
         console.log('There was a problem with the fetch operation: ' + e.message);
