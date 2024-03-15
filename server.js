@@ -92,18 +92,38 @@ app.post('/search', (req, res) => {
 
 
 function getLatestJsonFile(directory) {
-  const files = fs.readdirSync(directory);
-  const jsonFiles = files.filter(file => path.extname(file) === '.json');
-  if (jsonFiles.length === 0) {
+  try {
+    const files = fs.readdirSync(directory);
+    const jsonFiles = files.filter(file => path.extname(file) === '.json');
+    if (jsonFiles.length === 0) {
+      return null;
+    }
+    const latestFile = jsonFiles.reduce((prev, current) => {
+      const prevPath = path.join(directory, prev);
+      const currentPath = path.join(directory, current);
+      return fs.statSync(prevPath).mtime > fs.statSync(currentPath).mtime ? prev : current;
+    });
+    return path.join(directory, latestFile);
+  } catch (error) {
+    console.error(`Failed to get the latest JSON file from directory '${directory}':`, error);
     return null;
   }
-  const latestFile = jsonFiles.reduce((prev, current) => {
-    return fs.statSync(`${directory}/${prev}`).mtime > fs.statSync(`${directory}/${current}`).mtime ? prev : current;
-  });
-  return `${directory}/${latestFile}`;
 }
 
-app.get('search-archive', (req, res) => {
+
+//function getLatestJsonFile(directory) {
+//  const files = fs.readdirSync(directory);
+//  const jsonFiles = files.filter(file => path.extname(file) === '.json');
+//  if (jsonFiles.length === 0) {
+//    return null;
+//  }
+//  const latestFile = jsonFiles.reduce((prev, current) => {
+//    return fs.statSync(`${directory}/${prev}`).mtime > fs.statSync(`${directory}/${current}`).mtime ? prev : current;
+//  });
+//  return `${directory}/${latestFile}`;
+//}
+
+app.get('/search-archive', (req, res) => {
   const searchArchiveDir = path.join(__dirname, 'scripts', 'search_archive');
   console.log(`Reading search archive directory: ${searchArchiveDir}`);
 
