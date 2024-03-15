@@ -44,12 +44,14 @@ function loadJsonFiles() {
         return response.json();
     })
     .then(data => {
-        const dropdown = document.getElementById('json-files');
-        dropdown.innerHTML = '';
+        const resultsElement = document.getElementById('search-results');
+        resultsElement.innerHTML = '';
         data.files.forEach(file => {
-            const option = document.createElement('option');
-            option.textContent = file;
-            dropdown.appendChild(option);
+            const p = document.createElement('p');
+            p.textContent = file;
+            resultsElement.appendChild(p);
+            const br = document.createElement('br');
+            resultsElement.appendChild(br);
         });
     })
     .then(() => {
