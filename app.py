@@ -72,7 +72,7 @@ import os
 def load_json_files():
     try:
         data = request.json
-        file_path = os.path.join('search_archive', data['json_file_path'])
+        file_path = data['json_file_path']
         with open(file_path, 'r') as f:
             file_contents = json.load(f)
         return jsonify(file_contents)
