@@ -29,3 +29,35 @@
     <script src="scripts.js"></script>
 </body>
 </html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Arxiv Paper Explorer</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</head>
+<body>
+    <h1>Arxiv Paper Explorer</h1>
+
+    <div id="search-section">
+        <h2>Search Papers</h2>
+        <input type="text" id="search-query" placeholder="Enter search query">
+        <button onclick="searchPapers()">Search</button>
+        <pre id="search-results"></pre>
+    </div>
+
+    <div id="download-section">
+        <h2>Download Papers</h2>
+        <input type="text" id="download-ranks" placeholder="Enter ranks to download (comma-separated)">
+        <button onclick="downloadPapers()">Download</button>
+        <pre id="download-results"></pre>
+    </div>
+
+    <div id="summarize-section">
+        <h2>Summarize Abstracts</h2>
+        <input type="text" id="summarize-file" placeholder="Enter path to JSON file">
+        <button onclick="summarizeAbstracts()">Summarize</button>
+        <pre id="summarize-results"></pre>
+    </div>
+</body>
+</html>
