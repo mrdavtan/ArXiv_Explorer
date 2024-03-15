@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Paper Helper</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Research Paper Helper</h1>
+    <div id="search-section">
+        <h2>Search Papers</h2>
+        <input type="text" id="search-query" placeholder="Enter search query">
+        <button onclick="searchPapers()">Search</button>
+        <div id="search-results"></div>
+    </div>
+    <div id="download-section">
+        <h2>Download Papers</h2>
+        <input type="text" id="download-ranks" placeholder="Enter ranks to download (comma-separated)">
+        <button onclick="downloadPapers()">Download</button>
+        <div id="download-results"></div>
+    </div>
+    <div id="summarize-section">
+        <h2>Summarize Abstracts</h2>
+        <input type="text" id="summarize-file" placeholder="Enter JSON file path">
+        <button onclick="summarizeAbstracts()">Summarize</button>
+        <div id="summarize-results"></div>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>
