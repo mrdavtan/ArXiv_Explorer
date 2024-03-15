@@ -131,7 +131,7 @@ function toggleView() {
   console.log('toggleView function called');
   currentView = currentView === 'summary' ? 'abstract' : 'summary';
   const toggleButton = document.getElementById('toggle-view-btn');
-  toggleButton.textContent = currentView === 'summary' ? 'Abstract' : 'Summary';
+  toggleButton.textContent = currentView === 'summary' ? 'See Abstract' : 'See Summary';
   loadJsonFiles();
 
   // Trigger the loadJsonFile function after a short delay to allow the dropdown to update

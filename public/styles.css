@@ -13,6 +13,22 @@ h1 {
     margin-bottom: 20px;
 }
 
+#num-results {
+    width: 70px;
+}
+
+#search-query {
+    width: 825px;
+}
+
+#json-files {
+    width: 750px;
+}
+
+#toggle-view-btn {
+    width: 150px;
+}
+
 input[type="text"] {
     padding: 10px;
     margin-right: 10px;
@@ -21,7 +37,9 @@ input[type="text"] {
 
 button {
     padding: 10px 20px;
+    width: 150px;
     cursor: pointer;
+
 }
 
 #search-results, #download-results, #summarize-results {
@@ -30,6 +48,8 @@ button {
     background-color: #fff;
     border: 1px solid #ddd;
 }
+
+
 
 .search-results {
   white-space: pre-wrap;
@@ -68,4 +88,9 @@ button {
   word-wrap: break-word;
   hyphens: auto;
   white-space: pre-wrap;
+}
+
+.container {
+  max-width: 100%;
+
 }

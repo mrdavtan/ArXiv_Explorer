@@ -4,13 +4,17 @@
   <title>Arxiv Paper Explorer</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="styles.css">
+   <link rel="stylesheet" type="text/css" href="results.css">
+
 </head>
 <body>
   <div class="container">
     <h1>Arxiv Paper Explorer</h1>
 
+
     <div id="search-section">
       <h2>Search Papers</h2>
+
       <form id="search-form" class="form-inline">
         <div class="form-group mr-2">
           <input type="text" id="search-query" class="form-control" placeholder="Enter search query" required>
@@ -22,8 +26,11 @@
       </form>
 
       <div class="form-inline mt-3">
+        <button id="toggle-view-btn" class="btn btn-secondary mr-2" onclick="toggleView()">See Abstract</button>
+
+
         <select id="json-files" class="form-control mr-2"></select>
-        <button id="toggle-view-btn" class="btn btn-secondary mr-2" onclick="toggleView()">Abstract</button>
+
         <button id="load-json-btn" class="btn btn-primary" onclick="loadJsonFile()">Load JSON</button>
       </div>
 
