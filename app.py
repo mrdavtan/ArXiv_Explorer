@@ -26,9 +26,6 @@ def handle_exception(e):
         return jsonify(error=str(e)), e.code
     return jsonify(error=str(e)), 500
 
-@app.before_first_request
-def setup():
-    app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon.ico'))
 
 # Endpoint for searching embeddings
 @app.route('/search', methods=['POST'])
