@@ -19,13 +19,16 @@
           <input type="number" id="num-results" class="form-control" placeholder="Number of results" value="10">
         </div>
         <button type="submit" class="btn btn-primary mr-2">Search</button>
-        <button type="button" class="btn btn-secondary" onclick="summarizePapers()">Summarize</button>
       </form>
       <div class="form-inline mt-3">
         <select id="json-files" class="form-control mr-2"></select>
-        <button onclick="loadJsonFile()" class="btn btn-secondary">Load JSON File</button>
+        <button onclick="loadJsonFile()" class="btn btn-secondary">Abstract</button>
       </div>
-      <pre id="search-results" class="mt-3"></pre>
+      <div class="form-inline mt-3">
+        <select id="summary-files" class="form-control mr-2"></select>
+        <button onclick="loadSummaryFile()" class="btn btn-secondary">Summary</button>
+      </div>
+      <div id="results-container"></div>
     </div>
 
     <div id="download-section">
