@@ -75,7 +75,7 @@ def load_json_files():
         app.logger.info('Files: %s', files)
         if not files:
             raise FileNotFoundError('No files found in search_archive directory')
-        return jsonify({'files': files})
+        return jsonify({'files': sorted(files)})
     except Exception as e:
         return jsonify(error=str(e)), 400
 

@@ -32,7 +32,12 @@ function downloadPapers() {
 
 window.onload = function() {
     fetch('/load_json_files')
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         const dropdown = document.getElementById('json-files');
         data.files.forEach(file => {
@@ -40,6 +45,9 @@ window.onload = function() {
             option.text = file;
             dropdown.add(option);
         });
+    })
+    .catch(e => {
+        console.log('There was a problem with the fetch operation: ' + e.message);
     });
 }
 
