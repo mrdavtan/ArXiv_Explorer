@@ -47,6 +47,8 @@ function summarizeAbstracts() {
             const p = document.createElement('p');
             p.textContent = summary;
             resultsElement.appendChild(p);
+            const br = document.createElement('br');
+            resultsElement.appendChild(br);
         });
     });
 }
