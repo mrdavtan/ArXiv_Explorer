@@ -2,4 +2,4 @@ sentence-transformers
 faiss-gpu
 rank-bm25
 pandas
-
+flask

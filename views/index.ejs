@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Arxiv Paper Explorer</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Arxiv Paper Explorer</h1>
+
+    <div id="search-section">
+      <h2>Search Papers</h2>
+      <form id="search-form" class="form-inline">
+        <div class="form-group mr-2">
+          <input type="text" id="search-query" class="form-control" placeholder="Enter search query" required>
+        </div>
+        <div class="form-group mr-2">
+          <input type="number" id="num-results" class="form-control" placeholder="Number of results" value="10">
+        </div>
+        <button type="submit" class="btn btn-primary mr-2">Search</button>
+        <button type="button" class="btn btn-secondary" onclick="summarizePapers()">Summarize</button>
+      </form>
+      <div class="form-inline mt-3">
+        <select id="json-files" class="form-control mr-2"></select>
+        <button onclick="loadJsonFile()" class="btn btn-secondary">Load JSON File</button>
+      </div>
+      <pre id="search-results" class="mt-3"></pre>
+    </div>
+
+    <div id="download-section">
+      <h2>Download Papers</h2>
+      <form id="download-form">
+        <input type="text" id="download-ranks" placeholder="Enter ranks to download (comma-separated)" required>
+        <button type="submit" class="btn btn-primary">Download</button>
+      </form>
+      <pre id="download-results" class="mt-3"></pre>
+    </div>
+  </div>
+
+  <script src="scripts.js"></script>
+</body>
+</html>
