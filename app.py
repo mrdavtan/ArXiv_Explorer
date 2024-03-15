@@ -12,15 +12,15 @@ app = Flask(__name__)
 def index():
     return "Welcome to the Flask application!"
 
-#@app.errorhandler(Exception)
-#def handle_exception(e):
-#    # Handle generic exceptions
-
 @app.errorhandler(Exception)
 def handle_exception(e):
     if isinstance(e, HTTPException):
         return jsonify(error=str(e)), e.code
     return jsonify(error=str(e)), 500
+
+# Define the URL rule for the favicon
+app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon.ico'))
+
 
 @app.before_first_request
 def setup():
