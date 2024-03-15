@@ -31,6 +31,7 @@ function downloadPapers() {
 }
 
 window.onload = function() {
+    console.log('window.onload called');
     fetch('/load_json_files')
     .then(response => {
         if (!response.ok) {
@@ -39,6 +40,7 @@ window.onload = function() {
         return response.json();
     })
     .then(data => {
+        console.log('Received response from /load_json_files: ', data);
         const dropdown = document.getElementById('json-files');
         data.files.forEach(file => {
             const option = document.createElement('option');
