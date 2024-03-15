@@ -7,10 +7,10 @@ import sys
 import pandas as pd
 import uuid
 import re
-import argparse
+from sentence_transformers import SentenceTransformer, CrossEncoder
 from datetime import datetime
 
-def main(query_text, num_results, verbose):
+def search_embeddings(query_text, num_results=10, verbose=False):
     # Load the SentenceTransformer model
     model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -25,7 +25,6 @@ def main(query_text, num_results, verbose):
     # Load the compressed DataFrame
     df_data = pd.read_csv('compressed_dataframe.csv.gz', compression='gzip')
     print("Compressed DataFrame shape:", df_data.shape)
-
     num_centroids = 5
     embed_length = embeddings.shape[1]
 
@@ -110,7 +109,6 @@ def main(query_text, num_results, verbose):
     # Save the JSON data to the file
     # with open(file_path, 'w') as json_file:
     #     json.dump(json_data, json_file, indent=4)
-
     # print(f"Search results saved to: {file_path}")
 
     # Print the search results if the verbose flag is set
@@ -123,19 +121,4 @@ def main(query_text, num_results, verbose):
             print(f"Abstract: {result['Abstract']}")
             print()
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Search Embeddings')
-    parser.add_argument('query', type=str, help='Query string')
-    parser.add_argument('-n', '--num_results', type=int, default=10, help='Number of results to display (default: 10)')
-    parser.add_argument('-v', '--verbose', action='store_true', help='Print the search results')
-    args = parser.parse_args()
-
-    if len(sys.argv) < 2:
-        parser.print_usage()
-        sys.exit(1)
-
-    query_text = args.query
-    num_results = args.num_results
-    verbose = args.verbose
-
-    main(query_text, num_results, verbose)
+    return json_data
