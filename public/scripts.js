@@ -40,7 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadJsonFiles() {
-  fetch('/search-archive')
+  const endpoint = currentView === 'summary' ? '/summary-archive' : '/search-archive';
+  fetch(endpoint)
     .then(response => response.json())
     .then(files => {
       const select = document.getElementById('json-files');
@@ -57,11 +58,15 @@ function loadJsonFiles() {
 function loadJsonFile() {
   const selectedFile = document.getElementById('json-files').value;
   if (selectedFile) {
-    fetch(`/search-archive/${selectedFile}`)
+    const endpoint = currentView === 'summary' ? `/summary-archive/${selectedFile}` : `/search-archive/${selectedFile}`;
+    fetch(endpoint)
       .then(response => response.json())
       .then(data => {
-        searchResults = data.searchResults;
-        summaryResults = data.summaryResults;
+        if (currentView === 'summary') {
+          summaryResults = data;
+        } else {
+          searchResults = data.results;
+        }
         displayResults();
       })
       .catch(error => {
@@ -76,6 +81,7 @@ function toggleView() {
   currentView = currentView === 'summary' ? 'abstract' : 'summary';
   const toggleButton = document.getElementById('toggle-view-btn');
   toggleButton.textContent = currentView === 'summary' ? 'Abstract' : 'Summary';
+  loadJsonFiles();
   displayResults();
 }
 

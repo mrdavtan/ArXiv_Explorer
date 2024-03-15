@@ -125,42 +125,60 @@ app.get('/search-archive/:file', (req, res) => {
     }
     console.log(`JSON file read successfully: ${filePath}`);
     const searchResults = JSON.parse(data);
-
-    // Extract the first 5 words from the file name and sanitize
-    const filePrefix = file.split('_').slice(0, 5).join('_').replace(/\W+/g, '').toLowerCase();
-
-    // Search for a summary JSON file with a similar name
-    const summaryArchiveDir = 'summary_archive';
-    fs.readdir(summaryArchiveDir, (error, files) => {
-      if (error) {
-        console.error(`Error reading summary archive directory: ${error}`);
-        res.json({ searchResults: searchResults.results, summaryResults: [] });
-        return;
-      }
-
-      const similarSummaryFile = files.find(summaryFile => {
-        const summaryFilePrefix = summaryFile.split('_').slice(0, 5).join('_').replace(/\W+/g, '').toLowerCase();
-        return summaryFilePrefix === filePrefix;
-      });
-
-      if (similarSummaryFile) {
-        const summaryFilePath = path.join(summaryArchiveDir, similarSummaryFile);
-        fs.readFile(summaryFilePath, 'utf8', (error, summaryData) => {
-          if (error) {
-            console.error(`Error reading summary JSON file: ${error}`);
-            res.json({ searchResults: searchResults.results, summaryResults: [] });
-          } else {
-            const summaryResults = JSON.parse(summaryData);
-            res.json({ searchResults: searchResults.results, summaryResults });
-          }
-        });
-      } else {
-        console.log(`No matching summary JSON file found for: ${file}`);
-        res.json({ searchResults: searchResults.results, summaryResults: [] });
-      }
-    });
+    res.json(searchResults);
   });
 });
+
+
+//app.get('/search-archive/:file', (req, res) => {
+//  const file = req.params.file;
+//  const filePath = path.join('search_archive', file);
+//  console.log(`Reading JSON file: ${filePath}`);
+//
+//  fs.readFile(filePath, 'utf8', (error, data) => {
+//    if (error) {
+//      console.error(`Error reading JSON file: ${error}`);
+//      res.status(500).send('Error reading JSON file');
+//      return;
+//    }
+//    console.log(`JSON file read successfully: ${filePath}`);
+//    const searchResults = JSON.parse(data);
+//
+//    // Extract the first 5 words from the file name and sanitize
+//    const filePrefix = file.split('_').slice(0, 5).join('_').replace(/\W+/g, '').toLowerCase();
+//
+//    // Search for a summary JSON file with a similar name
+//    const summaryArchiveDir = 'summary_archive';
+//    fs.readdir(summaryArchiveDir, (error, files) => {
+//      if (error) {
+//        console.error(`Error reading summary archive directory: ${error}`);
+//        res.json({ searchResults: searchResults.results, summaryResults: [] });
+//        return;
+//      }
+//
+//      const similarSummaryFile = files.find(summaryFile => {
+//        const summaryFilePrefix = summaryFile.split('_').slice(0, 5).join('_').replace(/\W+/g, '').toLowerCase();
+//        return summaryFilePrefix === filePrefix;
+//      });
+//
+//      if (similarSummaryFile) {
+//        const summaryFilePath = path.join(summaryArchiveDir, similarSummaryFile);
+//        fs.readFile(summaryFilePath, 'utf8', (error, summaryData) => {
+//          if (error) {
+//            console.error(`Error reading summary JSON file: ${error}`);
+//            res.json({ searchResults: searchResults.results, summaryResults: [] });
+//          } else {
+//            const summaryResults = JSON.parse(summaryData);
+//            res.json({ searchResults: searchResults.results, summaryResults });
+//          }
+//        });
+//      } else {
+//        console.log(`No matching summary JSON file found for: ${file}`);
+//        res.json({ searchResults: searchResults.results, summaryResults: [] });
+//      }
+//    });
+//  });
+//});
 
 app.post('/download', (req, res) => {
   const ranks = req.body.ranks;
@@ -236,6 +254,23 @@ app.get('/summary-archive/:file', (req, res) => {
       return;
     }
     console.log(`JSON file read successfully: ${filePath}`);
-    res.json(JSON.parse(data));
+    const summaryResults = JSON.parse(data);
+    res.json(summaryResults);
   });
 });
+
+//app.get('/summary-archive/:file', (req, res) => {
+//  const file = req.params.file;
+//  const filePath = path.join('summary_archive', file);
+//  console.log(`Reading JSON file: ${filePath}`);
+//
+//  fs.readFile(filePath, 'utf8', (error, data) => {
+//    if (error) {
+//      console.error(`Error reading JSON file: ${error}`);
+//      res.status(500).send('Error reading JSON file');
+//      return;
+//    }
+//    console.log(`JSON file read successfully: ${filePath}`);
+//    res.json(JSON.parse(data));
+//  });
+//});
