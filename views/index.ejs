@@ -20,10 +20,13 @@
         </div>
         <button type="submit" class="btn btn-primary mr-2">Search</button>
       </form>
+
       <div class="form-inline mt-3">
-        <select id="json-files" class="form-control mr-2" onchange="loadJsonFile()"></select>
-        <button id="toggle-view-btn" class="btn btn-secondary" onclick="toggleView()">Abstract</button>
+        <select id="json-files" class="form-control mr-2"></select>
+        <button id="toggle-view-btn" class="btn btn-secondary mr-2" onclick="toggleView()">Abstract</button>
+        <button id="load-json-btn" class="btn btn-primary" onclick="loadJsonFile()">Load JSON</button>
       </div>
+
       <div id="results-container"></div>
     </div>
 

@@ -124,7 +124,41 @@ app.get('/search-archive/:file', (req, res) => {
       return;
     }
     console.log(`JSON file read successfully: ${filePath}`);
-    res.json(JSON.parse(data));
+    const searchResults = JSON.parse(data);
+
+    // Extract the first 5 words from the file name and sanitize
+    const filePrefix = file.split('_').slice(0, 5).join('_').replace(/\W+/g, '').toLowerCase();
+
+    // Search for a summary JSON file with a similar name
+    const summaryArchiveDir = 'summary_archive';
+    fs.readdir(summaryArchiveDir, (error, files) => {
+      if (error) {
+        console.error(`Error reading summary archive directory: ${error}`);
+        res.json({ searchResults: searchResults.results, summaryResults: [] });
+        return;
+      }
+
+      const similarSummaryFile = files.find(summaryFile => {
+        const summaryFilePrefix = summaryFile.split('_').slice(0, 5).join('_').replace(/\W+/g, '').toLowerCase();
+        return summaryFilePrefix === filePrefix;
+      });
+
+      if (similarSummaryFile) {
+        const summaryFilePath = path.join(summaryArchiveDir, similarSummaryFile);
+        fs.readFile(summaryFilePath, 'utf8', (error, summaryData) => {
+          if (error) {
+            console.error(`Error reading summary JSON file: ${error}`);
+            res.json({ searchResults: searchResults.results, summaryResults: [] });
+          } else {
+            const summaryResults = JSON.parse(summaryData);
+            res.json({ searchResults: searchResults.results, summaryResults });
+          }
+        });
+      } else {
+        console.log(`No matching summary JSON file found for: ${file}`);
+        res.json({ searchResults: searchResults.results, summaryResults: [] });
+      }
+    });
   });
 });
 

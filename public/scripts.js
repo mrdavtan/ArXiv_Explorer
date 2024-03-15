@@ -56,13 +56,20 @@ function loadJsonFiles() {
 
 function loadJsonFile() {
   const selectedFile = document.getElementById('json-files').value;
-  fetch(`/search-archive/${selectedFile}`)
-    .then(response => response.json())
-    .then(data => {
-      searchResults = data.results;
-      summaryResults = data.summaryResults;
-      displayResults();
-    });
+  if (selectedFile) {
+    fetch(`/search-archive/${selectedFile}`)
+      .then(response => response.json())
+      .then(data => {
+        searchResults = data.searchResults;
+        summaryResults = data.summaryResults;
+        displayResults();
+      })
+      .catch(error => {
+        console.error('Error loading JSON file:', error);
+      });
+  } else {
+    alert('Please select a JSON file from the dropdown.');
+  }
 }
 
 function toggleView() {
@@ -76,31 +83,41 @@ function displayResults() {
   const container = document.getElementById('results-container');
   let html = '';
   if (currentView === 'summary') {
-    html = `
-      <h3>Summary Results</h3>
-      ${summaryResults.map(result => `
-        <div class="result">
-          <p><strong>Rank:</strong> ${result.Rank}</p>
-          <p><strong>File:</strong> <a href="${result.File}" target="_blank">${result.File}</a></p>
-          <p><strong>Categories:</strong> ${result.Categories}</p>
-          <p class="summary">${result.Summary}</p>
-        </div>
-        <hr>
-      `).join('')}
-    `;
+    if (summaryResults.length > 0) {
+      html = `
+        <h3>Summary Results</h3>
+        ${summaryResults.map(result => `
+          <div class="result">
+            <p><strong>Rank:</strong> ${result.Rank}</p>
+            <p><strong>File:</strong> <a href="${result.File}" target="_blank">${result.File}</a></p>
+            <p><strong>Categories:</strong> ${result.Categories}</p>
+            <p class="summary">${result.Summary}</p>
+          </div>
+          <hr>
+        `).join('')}
+      `;
+    } else {
+      html = '<p>No summary results available.</p>';
+    }
   } else if (currentView === 'abstract') {
-    html = `
-      <h3>Abstract Results</h3>
-      ${searchResults.map(result => `
-        <div class="result">
-          <p><strong>Rank:</strong> ${result.Rank}</p>
-          <p><strong>File:</strong> <a href="${result.File}" target="_blank">${result.File}</a></p>
-          <p><strong>Categories:</strong> ${result.Categories}</p>
-          <p class="abstract">${result.Abstract}</p>
-        </div>
-        <hr>
-      `).join('')}
-    `;
+    if (searchResults.length > 0) {
+      html = `
+        <h3>Abstract Results</h3>
+        ${searchResults.map(result => `
+          <div class="result">
+            <p><strong>Rank:</strong> ${result.Rank}</p>
+            <p><strong>File:</strong> <a href="${result.File}" target="_blank">${result.File}</a></p>
+            <p><strong>Categories:</strong> ${result.Categories}</p>
+            <p class="abstract">${result.Abstract}</p>
+          </div>
+          <hr>
+        `).join('')}
+      `;
+    } else {
+      html = '<p>No abstract results available.</p>';
+    }
   }
   container.innerHTML = html;
 }
+
+
