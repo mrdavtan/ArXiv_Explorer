@@ -69,7 +69,12 @@ function loadJsonFiles() {
     })
     .then(data => {
         const resultsElement = document.getElementById('search-results');
-        resultsElement.innerHTML = JSON.stringify(data, null, 2);
+        resultsElement.innerHTML = '';
+        data.forEach(item => {
+            const p = document.createElement('p');
+            p.textContent = JSON.stringify(item, null, 2);
+            resultsElement.appendChild(p);
+        });
     })
     .catch(e => {
         console.log('There was a problem with the fetch operation: ' + e.message);
