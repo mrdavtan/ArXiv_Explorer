@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 from flask import url_for
-from flask import url_for
 from search_embeddings import search_embeddings
 from save_full_text import save_full_texts, get_latest_json_file
 from summarize import summarize_abstracts
@@ -8,7 +7,6 @@ from openai import ChatCompletion, OpenAI
 from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
-app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon.ico'))
 
 @app.route('/')
 def index():
@@ -17,6 +15,11 @@ def index():
 @app.errorhandler(Exception)
 def handle_exception(e):
     # Handle generic exceptions
+
+@app.before_first_request
+def setup():
+    app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon.ico'))
+
     if isinstance(e, HTTPException):
         return jsonify(error=str(e)), e.code
     return jsonify(error=str(e)), 500
