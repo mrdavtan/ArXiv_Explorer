@@ -30,8 +30,22 @@ function downloadPapers() {
     });
 }
 
+function loadJsonFiles() {
+    fetch('/load_json_files')
+    .then(response => response.json())
+    .then(data => {
+        const dropdown = document.getElementById('json-files');
+        dropdown.innerHTML = '';
+        data.files.forEach(file => {
+            const option = document.createElement('option');
+            option.textContent = file;
+            dropdown.appendChild(option);
+        });
+    });
+}
+
 function summarizeAbstracts() {
-    const filePath = document.getElementById('summarize-file').value;
+    const filePath = document.getElementById('json-files').value;
     fetch('/summarize', {
         method: 'POST',
         headers: {

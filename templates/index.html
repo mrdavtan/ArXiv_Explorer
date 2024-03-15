@@ -22,7 +22,8 @@
     </div>
     <div id="summarize-section">
         <h2>Summarize Abstracts</h2>
-        <input type="text" id="summarize-file" placeholder="Enter JSON file path">
+        <select id="json-files"></select>
+        <button onclick="loadJsonFiles()">Load JSON Files</button>
         <button onclick="summarizeAbstracts()">Summarize</button>
         <div id="summarize-results"></div>
     </div>

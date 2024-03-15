@@ -66,5 +66,12 @@ def summarize():
     except Exception as e:
         return jsonify(error=str(e)), 400
 
+import os
+
+@app.route('/load_json_files')
+def load_json_files():
+    files = os.listdir('search_archive')
+    return jsonify({'files': files})
+
 if __name__ == '__main__':
     app.run(debug=True)
