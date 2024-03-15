@@ -4,65 +4,75 @@ from openai import OpenAI
 from glob import glob
 
 def get_latest_json_file():
-    # Get a list of all JSON files in the search_archive directory
     json_files = glob(os.path.join('search_archive', '*.json'))
-
     if not json_files:
         return None
-
-    # Find the most recent file based on modification time
     latest_file = max(json_files, key=os.path.getmtime)
-
     return latest_file
 
 def extract_title(abstract):
-    # Extract the first sentence or a short phrase from the abstract as the title
     sentences = abstract.split('.')
-    if len(sentences) > 0:
-        title = sentences[0].strip()
-        return title
+    if sentences:
+        first_sentence = sentences[0].strip()
+        return first_sentence
     else:
         return ''
 
-def main():
-    # Get the latest JSON file
-    json_file = get_latest_json_file()
+def generate_title(client, first_sentence):
+    prompt = f"""
+    Given the first sentence of an abstract of a research paper, identify the official title and truncate any other text.
 
+    Title: {first_sentence}
+    """
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo-0301",
+        messages=[
+            {"role": "system", "content": "Generate a concise and descriptive title for the following abstract."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    title = completion.choices[0].message.content.strip()
+    return title
+
+def summarize_abstract(client, abstract):
+    prompt = f"""
+    Write a one sentence summary of the abstract at the level of a very smart high school student or a 2nd year college student.
+
+    {abstract}
+    """
+    completion = client.chat.completions.create(
+        model="gpt-4-0125-preview",
+        messages=[
+            {"role": "system", "content": "Summarize the abstract in simple terms."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    summary = completion.choices[0].message.content.strip()
+    return summary
+
+def main():
+    client = OpenAI()  # Initialize the OpenAI client
+    json_file = get_latest_json_file()
     if json_file is None:
         print("No JSON files found in the search_archive directory.")
         return
 
-    # Load the JSON data
     with open(json_file, 'r') as file:
         data = json.load(file)
 
-    # Extract the abstracts and titles from the JSON data
-    results = [(result['Abstract'], extract_title(result['Abstract'])) for result in data['results']]
+    for i, result in enumerate(data['results'], start=1):
+        abstract = result['Abstract']
+        first_sentence = extract_title(abstract)  # Extract the first sentence from the abstract
 
-    # Initialize the OpenAI client
-    client = OpenAI()
+        # Generate a title for the abstract
+        title = generate_title(client, first_sentence)
 
-    # Summarize each abstract
-    for i, (abstract, title) in enumerate(results, start=1):
-        prompt = f"""
-        You will be provided with an abstract for a research paper:
+        # Summarize the abstract
+        summary = summarize_abstract(client, abstract)
 
-        {abstract}
-
-        Write a one sentence summary of the abstract at the level of a high school student.
-        """
-
-        completion = client.chat.completions.create(
-            model="gpt-3.5-turbo-0301",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-
-        summary = completion.choices[0].message.content.strip()
         print(f"{i}. Title: {title}")
         print(f"   Summary: {summary}\n")
 
 if __name__ == '__main__':
     main()
+
