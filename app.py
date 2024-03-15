@@ -16,6 +16,7 @@ def handle_exception(e):
 # Endpoint for searching embeddings
 @app.route('/search', methods=['POST'])
 def search():
+    try:
     data = request.json
     query_text = data.get('query', '')
     num_results = data.get('num_results', 10)
@@ -27,6 +28,7 @@ def search():
 # Endpoint for downloading full texts
 @app.route('/download', methods=['POST'])
 def download():
+    try:
     data = request.json
     json_file_path = data.get('json_file_path', get_latest_json_file())
     rank_list = data.get('rank_list', [])
@@ -38,6 +40,7 @@ def download():
 # Endpoint for summarizing abstracts
 @app.route('/summarize', methods=['POST'])
 def summarize():
+    try:
     data = request.json
     json_file_path = data.get('json_file_path', get_latest_json_file())
     api_key = data.get('api_key', '')
