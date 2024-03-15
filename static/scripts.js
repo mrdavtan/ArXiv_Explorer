@@ -42,6 +42,11 @@ function summarizeAbstracts() {
     .then(response => response.json())
     .then(data => {
         const resultsElement = document.getElementById('summarize-results');
-        resultsElement.innerHTML = JSON.stringify(data, null, 2);
+        resultsElement.innerHTML = '';
+        data.summaries.forEach(summary => {
+            const p = document.createElement('p');
+            p.textContent = summary;
+            resultsElement.appendChild(p);
+        });
     });
 }
