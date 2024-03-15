@@ -68,7 +68,7 @@ def summarize():
 
 import os
 
-@app.route('/load_json_files', methods=['GET'])
+@app.route('/load_json_files', methods=['GET', 'POST'])
 def load_json_files():
     try:
         files = os.listdir('search_archive')
