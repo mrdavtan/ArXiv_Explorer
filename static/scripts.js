@@ -45,7 +45,7 @@ window.onload = function loadJsonFiles() {
 }
 
 function summarizeAbstracts() {
-    const filePath = document.getElementById('json-files-dropdown').value;
+    const filePath = document.getElementById('json-files').value;
     fetch('/summarize', {
         method: 'POST',
         headers: {
