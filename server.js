@@ -37,40 +37,54 @@ app.post('/search', (req, res) => {
     const numResults = req.body.numResults || 10;
     console.log(`Received search request: query=${query}, numResults=${numResults}`);
 
-    const scriptPath = path.join(__dirname, 'scripts', 'search_embeddings.py');
+    const searchScriptPath = path.join(__dirname, 'scripts', 'search_embeddings.py');
+    const searchArgs = [searchScriptPath, query.replace(/"/g, '\\"'), '-n', String(numResults)];
 
-    execFile('/usr/bin/python3', [scriptPath, query, '-n', String(numResults)], (error, stdout, stderr) => {
+    execFile('/usr/bin/python3', searchArgs, (error, stdout, stderr) => {
         if (error) {
             console.error(`Error executing search script: ${error}`);
+            console.error(`Standard Error: ${stderr}`);
             res.status(500).send('Error executing search script');
             return;
         }
         console.log('Search script executed successfully');
+        console.log(`Standard Output: ${stdout}`);
 
-        const searchArchiveDir = path.join(__dirname, 'scripts', 'search_archive');
-        const latestFile = getLatestJsonFile(searchArchiveDir);
-        if (latestFile) {
-            fs.readFile(latestFile, 'utf8', (error, data) => {
+        const latestSearchFile = getLatestJsonFile(searchArchiveDir);
+        if (latestSearchFile) {
+            fs.readFile(latestSearchFile, 'utf8', (error, data) => {
                 if (error) {
-                    console.error(`Error reading JSON file: ${error}`);
-                    res.status(500).send('Error reading JSON file');
+                    console.error(`Error reading search JSON file: ${error}`);
+                    res.status(500).send('Error reading search JSON file');
                     return;
                 }
                 const searchResults = JSON.parse(data);
 
-                // Assuming the summarization logic should follow here, correctly.
                 const summarizeScriptPath = path.join(__dirname, 'scripts', 'summarize.py');
-                // Correctly call execFile for the summarization script
                 execFile('/usr/bin/python3', [summarizeScriptPath], (error, stdout, stderr) => {
                     if (error) {
                         console.error(`Error executing summarize script: ${error}`);
+                        console.error(`Standard Error: ${stderr}`);
                         res.status(500).send('Error executing summarize script');
                         return;
                     }
                     console.log('Summarize script executed successfully');
+                    console.log(`Standard Output: ${stdout}`);
 
-                    // Assuming you want to process summary results further down
-                    // This part of your logic might need adjustment based on what you're actually doing with summary results
+                    const latestSummaryFile = getLatestJsonFile(summaryArchiveDir);
+                    if (latestSummaryFile) {
+                        fs.readFile(latestSummaryFile, 'utf8', (error, data) => {
+                            if (error) {
+                                console.error(`Error reading summary JSON file: ${error}`);
+                                res.status(500).send('Error reading summary JSON file');
+                                return;
+                            }
+                            const summaryResults = JSON.parse(data);
+                            res.json({ searchResults, summaryResults });
+                        });
+                    } else {
+                        res.json({ searchResults, summaryResults: [] });
+                    }
                 });
             });
         } else {
@@ -78,7 +92,6 @@ app.post('/search', (req, res) => {
         }
     });
 });
-
 
 function getLatestJsonFile(directory) {
   try {
@@ -171,12 +184,15 @@ app.post('/download', (req, res) => {
   const rankList = ranks.split(',').map(rank => rank.trim());
 
   // Execute the save_full_text script with the provided rank list
-  execFile(`python scripts/save_full_text.py "${JSON.stringify(rankList)}"`, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error executing download script: ${error}`);
-      res.status(500).send('Error executing download script');
-      return;
+
+  execFile('/usr/bin/python3', [summarizeScriptPath, text], (error, stdout, stderr) => {
+      if (error) {
+          console.error(`Error executing summarize script: ${error}`);
+          console.error(`Standard Error: ${stderr}`);
+          res.status(500).send('Error executing summarize script');
+          return;
     }
+
     console.log('Download script executed successfully');
     res.send(stdout);
   });
