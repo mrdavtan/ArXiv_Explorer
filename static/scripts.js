@@ -32,13 +32,7 @@ function downloadPapers() {
 
 window.onload = function() {
     console.log('window.onload called');
-    fetch('/load_json_files', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ json_file_path: 'search_archive' })
-    })
+    fetch('/load_json_files')
     .then(response => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
