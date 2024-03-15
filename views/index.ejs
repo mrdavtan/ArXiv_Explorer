@@ -20,8 +20,9 @@
         </div>
         <button type="submit" class="btn btn-primary mr-2">Search</button>
       </form>
-      <div class="mt-3">
-        <button id="toggle-view-btn" class="btn btn-secondary" onclick="toggleView()">Toggle Abstract/Summary</button>
+      <div class="form-inline mt-3">
+        <select id="json-files" class="form-control mr-2" onchange="loadJsonFile()"></select>
+        <button id="toggle-view-btn" class="btn btn-secondary" onclick="toggleView()">Abstract</button>
       </div>
       <div id="results-container"></div>
     </div>

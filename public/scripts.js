@@ -3,6 +3,8 @@ let searchResults = [];
 let summaryResults = [];
 
 document.addEventListener('DOMContentLoaded', () => {
+  loadJsonFiles();
+
   // Search form submission
   document.getElementById('search-form').addEventListener('submit', event => {
     event.preventDefault();
@@ -37,8 +39,36 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+function loadJsonFiles() {
+  fetch('/search-archive')
+    .then(response => response.json())
+    .then(files => {
+      const select = document.getElementById('json-files');
+      select.innerHTML = '';
+      files.forEach(file => {
+        const option = document.createElement('option');
+        option.value = file;
+        option.textContent = file;
+        select.appendChild(option);
+      });
+    });
+}
+
+function loadJsonFile() {
+  const selectedFile = document.getElementById('json-files').value;
+  fetch(`/search-archive/${selectedFile}`)
+    .then(response => response.json())
+    .then(data => {
+      searchResults = data.results;
+      summaryResults = data.summaryResults;
+      displayResults();
+    });
+}
+
 function toggleView() {
   currentView = currentView === 'summary' ? 'abstract' : 'summary';
+  const toggleButton = document.getElementById('toggle-view-btn');
+  toggleButton.textContent = currentView === 'summary' ? 'Abstract' : 'Summary';
   displayResults();
 }
 
