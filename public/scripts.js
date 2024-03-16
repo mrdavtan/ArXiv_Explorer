@@ -3,12 +3,8 @@ let searchResults = [];
 let summaryResults = [];
 let selectedFileUUID = '';
 
-console.log('Script loaded');
-
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOMContentLoaded event fired');
   loadJsonFiles();
-
   // Search form submission
   document.getElementById('search-form').addEventListener('submit', event => {
     event.preventDefault();
@@ -19,26 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query, numResults })
     })
-      .then(response => response.json())
+      .then(response => {
+        return response.json();
+      })
       .then(data => {
         searchResults = data.searchResults.results;
         summaryResults = data.summaryResults;
         displayResults();
-      });
-  });
-
-  // Download form submission
-  document.getElementById('download-form').addEventListener('submit', event => {
-    event.preventDefault();
-    const ranks = document.getElementById('download-ranks').value;
-    fetch('/download', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ranks })
-    })
-      .then(response => response.text())
-      .then(result => {
-        document.getElementById('download-results').textContent = result;
       });
   });
 });
@@ -49,7 +32,7 @@ function loadJsonFile() {
   console.log('Selected file:', selectedFile);
 
   if (selectedFile) {
-    const endpoint = currentView === 'summary' ? `/summary-archive/${selectedFile}` : `/search-archive/${selectedFile}`;
+    const endpoint = currentView === 'summary' ? `/scripts/summary_archive/${selectedFile}` : `/search-archive/${selectedFile}`;
     console.log('Fetching data from:', endpoint);
 
     fetch(endpoint)
@@ -77,6 +60,7 @@ function loadJsonFile() {
           searchResults = data.results;
           summaryResults = []; // Clear previous summary results
         }
+        console.log('Summary Results:', summaryResults);
         displayResults();
       })
       .catch(error => {
@@ -87,7 +71,7 @@ function loadJsonFile() {
 
 function loadJsonFiles() {
   console.log('loadJsonFiles function called');
-  const endpoint = currentView === 'summary' ? '/summary-archive' : '/search-archive';
+  const endpoint = currentView === 'summary' ? '/scripts/summary_archive' : '/search_archive';
   fetch(endpoint)
     .then(response => response.json())
     .then(files => {
@@ -95,7 +79,7 @@ function loadJsonFiles() {
       select.innerHTML = '';
 
       const filePromises = files.map(file => {
-        const fileEndpoint = currentView === 'summary' ? `/summary-archive/${file}` : `/search-archive/${file}`;
+        const fileEndpoint = currentView === 'summary' ? `/scripts/summary_archive/${file}` : `/search_archive/${file}`;
         return fetch(fileEndpoint).then(response => response.json());
       });
 
@@ -144,10 +128,10 @@ function displayResults() {
   const container = document.getElementById('results-container');
   let html = '';
   if (currentView === 'summary') {
-    if (summaryResults.length > 0) {
+    if (summaryResults.results && summaryResults.results.length > 0) {
       html = `
         <h3>Summary Results</h3>
-        ${summaryResults.map(result => `
+        ${summaryResults.results.map(result => `
           <div class="result">
             <p><strong>Rank:</strong> ${result.Rank}</p>
             <p><strong>File:</strong> <a href="${result.File}" target="_blank">${result.File}</a></p>
@@ -180,5 +164,6 @@ function displayResults() {
   }
   container.innerHTML = html;
 }
+
 
 

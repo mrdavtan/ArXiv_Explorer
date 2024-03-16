@@ -60,8 +60,15 @@ app.post('/search', (req, res) => {
                 }
                 const searchResults = JSON.parse(data);
 
+                //const summarizeScriptPath = path.join(__dirname, 'scripts', 'summarize.py');
+
                 const summarizeScriptPath = path.join(__dirname, 'scripts', 'summarize.py');
-                execFile('/usr/bin/python3', [summarizeScriptPath], (error, stdout, stderr) => {
+                const summarizeArgs = [summarizeScriptPath, latestSearchFile];
+
+                execFile('/usr/bin/python3', summarizeArgs, (error, stdout, stderr) => {
+
+
+                //execFile('/usr/bin/python3', [summarizeScriptPath], (error, stdout, stderr) => {
                     if (error) {
                         console.error(`Error executing summarize script: ${error}`);
                         console.error(`Standard Error: ${stderr}`);
