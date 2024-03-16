@@ -25,6 +25,7 @@ app.get('/', (req, res) => {
 
 // API endpoints
 
+
 app.post('/search', (req, res) => {
   const query = req.body.query;
   const numResults = req.body.numResults || 10;
@@ -40,8 +41,12 @@ app.post('/search', (req, res) => {
     }
     console.log('Search script executed successfully');
 
+    // Replace the hardcoded path with the correct directory path
+    const searchArchiveDir = path.join(__dirname, 'scripts', 'search_archive');
+    const latestFile = getLatestJsonFile(searchArchiveDir);
+    // ...
+
     // Read the latest search JSON file
-    const latestFile = getLatestJsonFile('/public/search_archive');
     if (latestFile) {
       fs.readFile(latestFile, 'utf8', (error, data) => {
         if (error) {
@@ -75,12 +80,15 @@ app.post('/search', (req, res) => {
           } else {
             res.json({ searchResults, summaryResults: [] });
           }
+
+
         });
       });
     } else {
       res.status(404).send('No search results found');
     }
   });
+
 });
 
 
@@ -90,11 +98,13 @@ function getLatestJsonFile(directory) {
   if (jsonFiles.length === 0) {
     return null;
   }
+
   const latestFile = jsonFiles.reduce((prev, current) => {
-    return fs.statSync(`${directory}/${prev}`).mtime > fs.statSync(`${directory}/${current}`).mtime ? prev : current;
+    const prevPath = path.join(directory, prev);
+    const currentPath = path.join(directory, current);
+    return fs.statSync(prevPath).mtime > fs.statSync(currentPath).mtime ? prev : current;
   });
-  return `${directory}/${latestFile}`;
-}
+
 
 app.get('/search-archive', (req, res) => {
   const archiveDir = 'public/search_archive';
@@ -181,21 +191,21 @@ app.post('/download', (req, res) => {
   });
 });
 
-app.post('/summarize', (req, res) => {
-  const text = req.body.text;
-  console.log(`Received summarize request: text=${text}`);
-
-  // Execute the summarize script with the provided text
-  exec(`python scripts/summarize.py "${text}"`, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error executing summarize script: ${error}`);
-      res.status(500).send('Error executing summarize script');
-      return;
-    }
-    console.log('Summarize script executed successfully');
-    res.send(stdout);
-  });
-});
+//app.post('/summarize', (req, res) => {
+//  const text = req.body.text;
+//  console.log(`Received summarize request: text=${text}`);
+//
+//  // Execute the summarize script with the provided text
+//  exec(`python scripts/summarize.py "${text}"`, (error, stdout, stderr) => {
+//    if (error) {
+//      console.error(`Error executing summarize script: ${error}`);
+//      res.status(500).send('Error executing summarize script');
+//      return;
+//    }
+//    console.log('Summarize script executed successfully');
+//    res.send(stdout);
+//  });
+//});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
