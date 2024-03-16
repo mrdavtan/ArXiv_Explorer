@@ -198,29 +198,6 @@ app.post('/download', (req, res) => {
   });
 });
 
-app.post('/summarize', (req, res) => {
-  const text = req.body.text;
-  console.log(`Received summarize request: text=${text}`);
-
-  const scriptPath = path.join(__dirname, 'scripts', 'summarize.py');
-
-  const process = execFile('python', [scriptPath], (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error executing summarize script: ${error}`);
-      res.status(500).send('Error executing summarize script');
-      return;
-    }
-    console.log('Summarize script executed successfully');
-    res.send(stdout);
-  });
-
-  // Write the text to the stdin of the Python process
-  if (process.stdin) {
-    process.stdin.write(text);
-    process.stdin.end(); // Close the stdin stream to indicate to the script that no more data is coming
-  }
-});
-
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
