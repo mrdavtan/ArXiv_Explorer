@@ -3,28 +3,51 @@ let searchResults = [];
 let summaryResults = [];
 let selectedFileUUID = '';
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadJsonFiles();
-  // Search form submission
-  document.getElementById('search-form').addEventListener('submit', event => {
-    event.preventDefault();
-    const query = document.getElementById('search-query').value;
-    const numResults = document.getElementById('num-results').value;
-    fetch('/search', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query, numResults })
-    })
-      .then(response => {
-        return response.json();
-      })
-      .then(data => {
-        searchResults = data.searchResults.results;
-        summaryResults = data.summaryResults;
-        displayResults();
-      });
-  });
+// Search form submission
+document.getElementById('search-form').addEventListener('submit', event => {
+  event.preventDefault();
+  const query = document.getElementById('search-query').value;
+  const numResults = document.getElementById('num-results').value;
+  performSearch(query, numResults);
 });
+
+function performSearch(query, numResults) {
+  fetch('/search', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, numResults })
+  })
+    .then(response => response.json())
+    .then(data => {
+      searchResults = data.searchResults.results;
+      summaryResults = data.summaryResults;
+      displayResults();
+    });
+}
+
+function loadJsonFiles() {
+  console.log('loadJsonFiles function called');
+  const endpoint = currentView === 'summary' ? '/scripts/summary_archive' : '/search-archive';
+  fetch(endpoint)
+    .then(response => response.json())
+    .then(files => {
+      console.log('Files:', files);
+      displayDropdownOptions(files);
+    })
+    .catch(error => {
+      console.error('Error loading JSON files:', error);
+    });
+}
+
+function toggleView() {
+  console.log('toggleView function called');
+  currentView = currentView === 'summary' ? 'abstract' : 'summary';
+  const toggleButton = document.getElementById('toggle-view-btn');
+  toggleButton.textContent = currentView === 'summary' ? 'See Abstract' : 'See Summary';
+
+  loadJsonFiles();
+  loadJsonFile();
+}
 
 function loadJsonFile() {
   console.log('loadJsonFile function called');
@@ -54,53 +77,18 @@ function loadJsonFile() {
         }
 
         if (currentView === 'summary') {
+          summaryResults = data;
           searchResults = []; // Clear previous search results
-          summaryResults = data.results;
         } else {
           searchResults = data.results;
-          summaryResults = []; // Clear previous summary results
+          summaryResults = {}; // Clear previous summary results
         }
-        console.log('Summary Results:', summaryResults);
         displayResults();
       })
       .catch(error => {
         console.error('Error loading JSON file:', error);
       });
   }
-}
-
-function loadJsonFiles() {
-  console.log('loadJsonFiles function called');
-  const endpoint = currentView === 'summary' ? '/scripts/summary_archive' : '/search_archive';
-  fetch(endpoint)
-    .then(response => response.json())
-    .then(files => {
-      const select = document.getElementById('json-files');
-      select.innerHTML = '';
-
-      const filePromises = files.map(file => {
-        const fileEndpoint = currentView === 'summary' ? `/scripts/summary_archive/${file}` : `/search_archive/${file}`;
-        return fetch(fileEndpoint).then(response => response.json());
-      });
-
-      Promise.all(filePromises)
-        .then(jsonDataList => {
-          jsonDataList.forEach((jsonData, index) => {
-            const option = document.createElement('option');
-            option.value = files[index];
-            option.textContent = files[index];
-            select.appendChild(option);
-
-            if (jsonData.id === selectedFileUUID) {
-              select.value = files[index];
-              console.log('Matching file found:', files[index]);
-            }
-          });
-        })
-        .catch(error => {
-          console.error('Error loading JSON files:', error);
-        });
-    });
 }
 
 function logDropdownOptions() {
@@ -111,22 +99,21 @@ function logDropdownOptions() {
   }
 }
 
-function toggleView() {
-  console.log('toggleView function called');
-  currentView = currentView === 'summary' ? 'abstract' : 'summary';
-  const toggleButton = document.getElementById('toggle-view-btn');
-  toggleButton.textContent = currentView === 'summary' ? 'See Abstract' : 'See Summary';
-  loadJsonFiles();
+function displayDropdownOptions(files) {
+  const select = document.getElementById('json-files');
+  select.innerHTML = '';
 
-  // Trigger the loadJsonFile function after a short delay to allow the dropdown to update
-  setTimeout(() => {
-    loadJsonFile();
-  }, 100);
+  files.forEach(file => {
+    const option = document.createElement('option');
+    option.value = file;
+    option.textContent = file;
+    select.appendChild(option);
+  });
 }
 
 function displayResults() {
   const container = document.getElementById('results-container');
-  let html = '';
+parallel computing large graphs  let html = '';
   if (currentView === 'summary') {
     if (summaryResults.results && summaryResults.results.length > 0) {
       html = `
