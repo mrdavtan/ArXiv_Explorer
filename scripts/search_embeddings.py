@@ -86,6 +86,24 @@ def main(query_text, num_results, verbose):
     search_uuid = str(uuid.uuid4())
 
     # Prepare the search results
+#    for i in range(num_results):
+#        text = df_sorted.loc[i, 'pred_text']
+#        original_index = df_sorted.loc[i, 'original_index']
+#        cross_score = df_sorted.loc[i, 'cross_scores']
+#        arxiv_id = df_data.loc[original_index, 'id']
+#        cat_text = df_data.loc[original_index, 'categories']
+#        link_to_pdf = f'https://arxiv.org/pdf/{arxiv_id}'
+#
+#        result = {
+#            'Title':
+#            'Rank': f'{i+1} (Index: {original_index}, Score: {cross_score})',
+#            'File': link_to_pdf,
+#            'Categories': cat_text,
+#            'Abstract': text
+#        }
+#        search_results.append(result)
+
+    # Prepare the search results
     for i in range(num_results):
         text = df_sorted.loc[i, 'pred_text']
         original_index = df_sorted.loc[i, 'original_index']
@@ -94,13 +112,18 @@ def main(query_text, num_results, verbose):
         cat_text = df_data.loc[original_index, 'categories']
         link_to_pdf = f'https://arxiv.org/pdf/{arxiv_id}'
 
+        # Extract the title from the abstract
+        title = extract_title(text)
+
         result = {
+            'Title': title,
             'Rank': f'{i+1} (Index: {original_index}, Score: {cross_score})',
             'File': link_to_pdf,
             'Categories': cat_text,
             'Abstract': text
         }
         search_results.append(result)
+
 
     # Create the JSON data
     json_data = {
@@ -123,7 +146,18 @@ def main(query_text, num_results, verbose):
             print(f"File: {result['File']}")
             print(f"Categories: {result['Categories']}")
             print(f"Abstract: {result['Abstract']}")
+            print(f"Title:{result['Title']}")
             print()
+
+
+def extract_title(text):
+    # Split the text into sentences using regular expression
+    sentences = re.split(r'(?<=[^A-Z].[.?]) +(?=[A-Z])', text)
+
+    # Get the first sentence as the title
+    title = sentences[0].strip() if sentences else ""
+
+    return title
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Search Embeddings')

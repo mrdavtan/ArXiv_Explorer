@@ -149,6 +149,7 @@ function displayStaticResults() {
         <h3>Summary Results</h3>
         ${summaryResults.map(result => `
           <div class="result">
+            <p class="result-title" ><strong></strong> ${result.Title}</p>
             <p><strong>Rank:</strong> ${result.Rank}</p>
             <p><strong>File:</strong> <a href="${result.File}" target="_blank">${result.File}</a></p>
             <p><strong>Categories:</strong> ${result.Categories}</p>
@@ -166,6 +167,7 @@ function displayStaticResults() {
         <h3>Abstract Results</h3>
         ${searchResults.map(result => `
           <div class="result">
+            <p class="result-title"><strong></strong> ${result.Title}</p>
             <p><strong>Rank:</strong> ${result.Rank}</p>
             <p><strong>File:</strong> <a href="${result.File}" target="_blank">${result.File}</a></p>
             <p><strong>Categories:</strong> ${result.Categories}</p>
@@ -190,6 +192,7 @@ function displayResults() {
         <h3>Summary Results</h3>
         ${summaryResults.results.map(result => `
           <div class="result">
+            <p class="result-title"><strong></strong> ${result.Title}</p>
             <p><strong>Rank:</strong> ${result.Rank}</p>
             <p><strong>File:</strong> <a href="${result.File}" target="_blank">${result.File}</a></p>
             <p><strong>Categories:</strong> ${result.Categories}</p>
@@ -207,6 +210,7 @@ function displayResults() {
         <h3>Abstract Results</h3>
         ${searchResults.map(result => `
           <div class="result">
+            <p class="result-title"><strong></strong> ${result.Title}</p>
             <p><strong>Rank:</strong> ${result.Rank}</p>
             <p><strong>File:</strong> <a href="${result.File}" target="_blank">${result.File}</a></p>
             <p><strong>Categories:</strong> ${result.Categories}</p>
