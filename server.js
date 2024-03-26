@@ -9,6 +9,13 @@ const path = require('path');
 
 // Set up EJS as the view engine
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+app.use((req, res, next) => {
+  console.log(`Incoming request: ${req.method} ${req.url}`);
+  next();
+});
+
 
 app.use('/scripts', express.static(path.join(__dirname, 'scripts')));
 const searchArchiveDir = path.join(__dirname, 'scripts', 'search_archive');
@@ -25,7 +32,7 @@ app.use(bodyParser.json());
 app.use(upload.none());
 
 // Render the index.ejs file
-app.get('/', (req, res) => {
+app.get('/index', (req, res) => {
   res.render('index');
 });
 
