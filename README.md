@@ -2,11 +2,15 @@
 
 ![arxiv_rag_faiss_explorer](https://github.com/mrdavtan/ArXiv_Explorer/assets/21132073/51cfdb1c-ad16-427d-9d37-18f2178c3098)
 
-## Introduction
+## Background
 
-The ArXiv RAG/FAISS Explorer is a node app that I decided to build after trying out paid and free alternatives and not being happy with either.
+The ArXiv RAG/FAISS Explorer is a node app with a few convenience features for my own research; mainly similarity search, ranking, summarizing (OpenAI API) for quickly browsing related AI/ML topics/literature. The dataset is free and incredibly powerful. Use it for good. To read more about the Open Archives Initiative: https://info.arxiv.org/help/oa/index.html
 
-This tool uses vector similarity search for exploring the extensive collection of research papers on ArXiv. Inspired by the approach outlined in tutorials by vbookshelf (https://www.kaggle.com/vbookshelf), this tool facilitates natural language queries, enabling users to sift through approximately 2.4 million papers with ease and efficiency for free. This project integrates FAISS (Facebook AI Similarity Search) and Sentence Transformers.
+There is a training step involved, so if you're familiar with python and node.js, you should be able to get this to run fairly easily. I've ironed out some of the issues from the original training instructions. Future work: paper insights and a system to update to the latest dataset automatically.
+
+## Description
+
+This tool uses vector similarity search for exploring the extensive collection of research papers on ArXiv. The training steps originated from vbookshelf (https://www.kaggle.com/vbookshelf). This tool facilitates natural language queries, enabling users to sift through approximately 2.4 million papers with ease and efficiency for free. This project integrates FAISS (Facebook AI Similarity Search) and Sentence Transformers.
 
 ## Features
 
@@ -40,21 +44,26 @@ pip install -r requirements.txt
 # Make sure to have node installed
 npm init -y
 npm install
-# start the server
-node server.js
 ```
-
-Open a browser and go to http://localhost:3000
 
 ## Dataset
 
 You will need the arxiv dataset which can be found at https://www.kaggle.com/datasets/Cornell-University/arxiv
-The training step took about an hour and half on my RTX 4080 GPU. I update the training method in my script as I had errors when following the original training steps.
+It's about 1.3Gb and you will need to extract it and place it in the scripts folder. i
+Run create_embeddings.py from the scripts folder, and then go outside and hug a deer. Drink matcha tea. Take a cold shower. Make a sandwich. Call your parents. The training step took about an hour on a RTX4080 GPU.
+The process will create a file called 'compressed_dataframe.csv.gz' and one called 'embeddings.npy'.
 
 
 # Usage
 
-Enter some keywords in the search bar and hit submit. It can take up to a minute based on the number of searches and your GPU. I suggest keeping it to 10 or less.
+go to the root of the project and run
+
+'''bash
+node server.js
+```
+
+Enter some keywords in the search bar and hit submit.
+It can take up to a minute based on the number of searches and your GPU. I suggest keeping the number of results to 10 or less.
 
 
 ## Resources and Acknowledgments

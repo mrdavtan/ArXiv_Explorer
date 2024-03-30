@@ -4,13 +4,13 @@ from sentence_transformers import SentenceTransformer
 import json
 
 # Load the category map from the JSON file
-with open('category_map.json', 'r') as f:
+with open('./category_map.json', 'r') as f:
     category_dict = json.load(f)
 
 # Load the Arxiv metadata
 cols = ['id', 'title', 'abstract', 'categories']
 data = []
-file_name = '../../db/arxiv_data/arxiv-metadata-oai-snapshot.json'
+file_name = './arxiv-metadata-oai-snapshot.json'
 
 with open(file_name, encoding='utf-8') as f:
     for line in f:
