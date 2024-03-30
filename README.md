@@ -4,11 +4,11 @@
 
 ## Background
 
-The ArXiv RAG/FAISS Explorer is a web app utility with basic convenience features I needed for quickly looking up related AI/ML topics/literature and saving them for later reading. There are paid tools that do basically the same thing. The dataset is free and incredibly powerful. So is this web app. Use it for good.
+The ArXiv RAG/FAISS Explorer is a web app utility I needed for quickly looking up related AI/ML topics/literature and saving them for later reading. There are paid tools that do basically the same thing. The dataset is free and incredibly powerful. Use it for good.
 
 To read more about the Open Archives Initiative: https://info.arxiv.org/help/oa/index.html
 
-There is a training step involved, so if you're familiar with python and node.js, you should be able to get this to run fairly easily. I'm running this on Ubuntu 22.04. It should be straight forward on macOS. If you're on Windows, WSL2 should be fine. I've ironed out some of the issues from the original training instructions. Future work: paper insights and a system to update to the latest dataset automatically.
+There is a training step involved, so if you're familiar with a bit of python and node, you should be able to get this to run fairly easily. I'm running this on Ubuntu 22.04. It should be straight forward on macOS. If you're on Windows, I suggest using WSL2. Future work (time allowing): paper insights and a system to update to the latest dataset automatically.
 
 ## Description
 
@@ -50,11 +50,10 @@ npm install
 
 ## Dataset
 
-You will need the arxiv dataset which can be found at https://www.kaggle.com/datasets/Cornell-University/arxiv
-It's about 1.3Gb and you will need to extract it and place it in the scripts folder. i
-Run create_embeddings.py from the scripts folder, and then go outside and hug a deer. Drink matcha tea. Take a cold shower. Make a sandwich. Call your parents. The training step took about an hour on a RTX4080 GPU.
-The process will create a file called 'compressed_dataframe.csv.gz' and one called 'embeddings.npy'.
-
+- You will need the arxiv dataset which can be found at https://www.kaggle.com/datasets/Cornell-University/arxiv
+- It's about 1.3Gb and you will need to extract it and place it in the scripts folder.
+- Run create_embeddings.py from the scripts folder, and then go outside and hug a deer. Drink matcha. Take a cold shower. Make a sandwich. Call your parents. The training step took about 1.2hrs on a RTX4080.
+- If all went well, the process will generate 'compressed_dataframe.csv.gz' and 'embeddings.npy'. You should be ready to use it.
 
 # Usage
 
