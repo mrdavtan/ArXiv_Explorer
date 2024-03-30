@@ -1,18 +1,25 @@
+import os
 import pandas as pd
 import numpy as np
 from sentence_transformers import SentenceTransformer
 import json
 
+directory = "/path/to/ArXiv_RAG_FAISS_Explorer"
+
 # Load the category map from the JSON file
-with open('./category_map.json', 'r') as f:
+category_map_file = 'category_map.json'
+with open(os.path.join(directory, category_map_file), 'r') as f:
     category_dict = json.load(f)
 
 # Load the Arxiv metadata
 cols = ['id', 'title', 'abstract', 'categories']
 data = []
-file_name = './arxiv-metadata-oai-snapshot.json'
 
-with open(file_name, encoding='utf-8') as f:
+arxiv_metadata_file = 'arxiv-metadata-oai-snapshot.json'
+arxiv_metadata_path = os.path.join(directory, arxiv_metadata_file)
+print(f"File path: {arxiv_metadata_path}")
+
+with open(arxiv_metadata_path, encoding='utf-8') as f:
     for line in f:
         if line.strip():  # Check if the line is not empty or whitespace
             doc = json.loads(line)
@@ -45,10 +52,11 @@ def clean_text(x):
 
 df_data['title'] = df_data['title'].apply(clean_text)
 df_data['abstract'] = df_data['abstract'].apply(clean_text)
-
 df_data['prepared_text'] = df_data['title'] + ' ' + df_data['abstract']
 
-df_data.to_csv('compressed_dataframe.csv.gz', compression='gzip', index=False)
+compressed_df_file = 'compressed_dataframe.csv.gz'
+compressed_df_path = os.path.join(directory, compressed_df_file)
+df_data.to_csv(compressed_df_path, compression='gzip', index=False)
 
 chunk_list = list(df_data['prepared_text'])
 
@@ -63,6 +71,8 @@ metadata = {i: chunk for i, chunk in enumerate(chunk_list)}
 metadata_array = np.array(list(metadata.items()), dtype=[('index', int), ('text', object)])
 
 # Save the embeddings and metadata as a single .npy file
-np.save('embeddings.npy', {'embeddings': embeddings, 'metadata': metadata_array})
+embeddings_file = 'embeddings.npy'
+embeddings_path = os.path.join(directory, embeddings_file)
+np.save(embeddings_path, {'embeddings': embeddings, 'metadata': metadata_array})
 
 print("Embeddings and metadata saved successfully.")

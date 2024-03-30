@@ -1,12 +1,10 @@
-# ArXiv RAG/FAISS Explorer
+# ArXiv Explorer
 
 ![arxiv_rag_faiss_explorer](https://github.com/mrdavtan/ArXiv_Explorer/assets/21132073/51cfdb1c-ad16-427d-9d37-18f2178c3098)
 
 ## Background
 
-The ArXiv RAG/FAISS Explorer is a web app utility I needed for quickly looking up related AI/ML topics/literature and saving them for later reading. There are paid tools that do basically the same thing. The dataset is free and incredibly powerful. Use it for good.
-
-To read more about the Open Archives Initiative: https://info.arxiv.org/help/oa/index.html
+The ArXiv Explorer is a web app/utility I was inspired to put together after I realized how incredibly useful and powerful it to be able to browse the ArXiv archive papers. For quickly analyzing research papers, elicit.com is one of the best, at a cost. If you have a decent gpu this fulfilled my needs of quickly looking up a topic, related papers, ranking and saving of summaries/abstracts/papers. This is an awesome dataset made available for free. To read more about the Open Archives Initiative: https://info.arxiv.org/help/oa/index.html
 
 There is a training step involved, so if you're familiar with a bit of python and node, you should be able to get this to run fairly easily. I'm running this on Ubuntu 22.04. It should be straight forward on macOS. If you're on Windows, I suggest using WSL2. Future work (time allowing): paper insights and a system to update to the latest dataset automatically.
 
