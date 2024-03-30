@@ -1,8 +1,10 @@
-# ArXiv RAG FAISS Search Utility
+# ArXiv RAG/FAISS Explorer
 
 ## Introduction
 
-The ArXiv RAG FAISS Search Utility is a tool that uses vector similarity search for exploring the extensive collection of research papers on ArXiv. Inspired by the groundbreaking approach outlined in tutorials by vbookshelf, this utility facilitates natural language queries, enabling users to sift through approximately 2.4 million papers with unparalleled ease and efficiency. Our project stands on the shoulders of giants, integrating cutting-edge technologies like FAISS (Facebook AI Similarity Search) and Sentence Transformers to revolutionize how research is conducted and accessed.
+The ArXiv RAG/FAISS Explorer is a basic node js app that I built for my own AI research after finding some of the alternatives a bit expensive.
+
+This tool uses vector similarity search for exploring the extensive collection of research papers on ArXiv. Inspired by the approach outlined in tutorials by vbookshelf (https://www.kaggle.com/vbookshelf), this tool facilitates natural language queries, enabling users to sift through approximately 2.4 million papers with ease and efficiency for free. This project integrates FAISS (Facebook AI Similarity Search) and Sentence Transformers.
 
 ## Features
 
@@ -10,10 +12,12 @@ The ArXiv RAG FAISS Search Utility is a tool that uses vector similarity search 
 - **Vector Similarity Search**: Utilizes FAISS for efficient and fast search through large datasets based on vector similarity.
 - **Comprehensive Database**: Access a wide array of research papers from the ArXiv dataset, updated weekly.
 - **Summarization**: Leverage OpenAI models to generate concise summaries of research paper abstracts, streamlining your review process.
+- **Saved Searches**: Go back to previous searches for further reading or exploration.
+- **Download Papers**: Select which papers to download from the GUI.
 
 ## Getting Started
 
-To use the ArXiv RAG FAISS Search Utility, please ensure that your environment supports GPU acceleration for optimal performance. Follow the installation instructions provided in this repository to set up the utility on your system.
+To use the ArXiv RAG/FAISS Explorer, please ensure that your environment supports GPU acceleration for optimal performance. Follow the installation instructions provided in this repository to set up the app on your system.
 
 ## How It Works
 
@@ -23,12 +27,22 @@ The utility processes titles and abstracts of ArXiv papers, converting them into
 
 ```bash
 # Clone this repository
-git clone <repository-url>
+git clone git@github.com:mrdavtan/ArXiv_RAG_FAISS.git
 # Navigate to the project directory
-cd <project-directory>
+cd ArXiv_RAG_FAISS
+# I suggest using a virtual env.
+python -m venv .venv
+source .venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
+# Make sure to have node installed
+npm init -y
+npm install
+# start the server
+node server.js
 ```
+
+Open your browser and go to http://localhost:3000
 
 ## Dataset
 

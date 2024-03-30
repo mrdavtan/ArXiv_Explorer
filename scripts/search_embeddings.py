@@ -86,24 +86,6 @@ def main(query_text, num_results, verbose):
     search_uuid = str(uuid.uuid4())
 
     # Prepare the search results
-#    for i in range(num_results):
-#        text = df_sorted.loc[i, 'pred_text']
-#        original_index = df_sorted.loc[i, 'original_index']
-#        cross_score = df_sorted.loc[i, 'cross_scores']
-#        arxiv_id = df_data.loc[original_index, 'id']
-#        cat_text = df_data.loc[original_index, 'categories']
-#        link_to_pdf = f'https://arxiv.org/pdf/{arxiv_id}'
-#
-#        result = {
-#            'Title':
-#            'Rank': f'{i+1} (Index: {original_index}, Score: {cross_score})',
-#            'File': link_to_pdf,
-#            'Categories': cat_text,
-#            'Abstract': text
-#        }
-#        search_results.append(result)
-
-    # Prepare the search results
     for i in range(num_results):
         text = df_sorted.loc[i, 'pred_text']
         original_index = df_sorted.loc[i, 'original_index']
