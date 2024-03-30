@@ -7,8 +7,8 @@ from glob import glob
 import re
 from datetime import datetime
 
-search_archive_dir = '/home/davtan/code/retrievers/arxiv_faiss/scripts/search_archive'
-summary_archive_dir = '/home/davtan/code/retrievers/arxiv_faiss/scripts/summary_archive'
+search_archive_dir = './search_archive'
+summary_archive_dir = './summary_archive'
 
 def get_latest_json_file():
     json_files = glob(os.path.join(search_archive_dir, '*.json'))
@@ -16,13 +16,6 @@ def get_latest_json_file():
         return None
     latest_file = max(json_files, key=os.path.getmtime)
     return latest_file
-
-#def get_latest_json_file():
-#    json_files = glob(os.path.join('search_archive', '*.json'))
-#    if not json_files:
-#        return None
-#    latest_file = max(json_files, key=os.path.getmtime)
-#    return latest_file
 
 def extract_title(abstract):
     sentences = abstract.split('.')
@@ -76,38 +69,12 @@ def save_summary(query, summary_results, uuid):
         json.dump(summary_data, json_file, indent=4)
     print(f"Summary saved to: {file_path}")
 
-#def save_summary(query, summary_results, uuid):
-#    current_date = datetime.now().strftime('%Y%m%d%H%M')
-#    filename = re.sub(r'\W+', '_', query) + '_' + current_date + '.json'
-#    file_path = os.path.join('summary_archive', filename)
-#
-#    os.makedirs('summary_archive', exist_ok=True)
-#
-#    summary_data = {
-#        'id': uuid,
-#        'query': query,
-#        'results': summary_results
-#    }
-#
-#    with open(file_path, 'w') as json_file:
-#        json.dump(summary_data, json_file, indent=4)
-#
-#    print(f"Summary saved to: {file_path}")
-
 def main(file_name):
     client = OpenAI()
     json_file = os.path.join(search_archive_dir, file_name)
     if not os.path.isfile(json_file):
         print(f"File not found: {json_file}")
         return
-
-#def main(file_name):
-#    client = OpenAI()  # Initialize the OpenAI client
-#
-#    json_file = os.path.join('search_archive', file_name)
-#    if not os.path.isfile(json_file):
-#        print(f"File not found: {json_file}")
-#        return
 
     with open(json_file, 'r') as file:
         data = json.load(file)
