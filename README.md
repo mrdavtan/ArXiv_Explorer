@@ -1,10 +1,10 @@
-# ArXiv RAG/FAISS Explorer
+# ArXiv Explorer
 
 ![arxiv_rag_faiss_explorer](https://github.com/mrdavtan/ArXiv_Explorer/assets/21132073/51cfdb1c-ad16-427d-9d37-18f2178c3098)
 
 ## Background
 
-The ArXiv RAG/FAISS Explorer is a web app utility I needed for quickly looking up related AI/ML topics/literature and saving them for later reading. There are paid tools that do basically the same thing. The dataset is free and incredibly powerful. Use it for good.
+The ArXiv RAG/FAISS Explorer is a utility I made for quickly looking up related AI/ML topics/literature and saving them for later reading. There are paid tools that do basically the same thing. The dataset is free and an amazing resource. We should make these incredible resources more accessible.
 
 To read more about the Open Archives Initiative: https://info.arxiv.org/help/oa/index.html
 
