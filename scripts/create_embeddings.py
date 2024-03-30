@@ -4,11 +4,16 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 import json
 
-directory = "/path/to/ArXiv_RAG_FAISS_Explorer"
+# Load the configuration file
+with open('config.json', 'r') as f:
+    config = json.load(f)
+
+directory = config['baseDir']
+scripts_dir = os.path.join(directory, config['scriptsDir'])
 
 # Load the category map from the JSON file
 category_map_file = 'category_map.json'
-with open(os.path.join(directory, category_map_file), 'r') as f:
+with open(os.path.join(scripts_dir, category_map_file), 'r') as f:
     category_dict = json.load(f)
 
 # Load the Arxiv metadata
@@ -16,7 +21,7 @@ cols = ['id', 'title', 'abstract', 'categories']
 data = []
 
 arxiv_metadata_file = 'arxiv-metadata-oai-snapshot.json'
-arxiv_metadata_path = os.path.join(directory, arxiv_metadata_file)
+arxiv_metadata_path = os.path.join(scripts_dir, arxiv_metadata_file)
 print(f"File path: {arxiv_metadata_path}")
 
 with open(arxiv_metadata_path, encoding='utf-8') as f:
@@ -55,7 +60,7 @@ df_data['abstract'] = df_data['abstract'].apply(clean_text)
 df_data['prepared_text'] = df_data['title'] + ' ' + df_data['abstract']
 
 compressed_df_file = 'compressed_dataframe.csv.gz'
-compressed_df_path = os.path.join(directory, compressed_df_file)
+compressed_df_path = os.path.join(scripts_dir, compressed_df_file)
 df_data.to_csv(compressed_df_path, compression='gzip', index=False)
 
 chunk_list = list(df_data['prepared_text'])
@@ -72,7 +77,7 @@ metadata_array = np.array(list(metadata.items()), dtype=[('index', int), ('text'
 
 # Save the embeddings and metadata as a single .npy file
 embeddings_file = 'embeddings.npy'
-embeddings_path = os.path.join(directory, embeddings_file)
+embeddings_path = os.path.join(scripts_dir, embeddings_file)
 np.save(embeddings_path, {'embeddings': embeddings, 'metadata': metadata_array})
 
 print("Embeddings and metadata saved successfully.")

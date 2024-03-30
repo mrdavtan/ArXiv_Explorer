@@ -1,0 +1,7 @@
+{
+  "baseDir": "/home/davtan/code/retrievers/ArXiv_Explorer",
+  "searchArchiveDir": "search_archive",
+  "summaryArchiveDir": "summary_archive",
+  "scriptsDir": "scripts",
+  "publicDir": "public"
+}

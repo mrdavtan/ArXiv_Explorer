@@ -49,7 +49,7 @@ function loadJsonFile() {
   console.log('Selected file:', selectedFile);
 
   if (selectedFile) {
-    const endpoint = currentView === 'summary' ? `/summary-archive/${selectedFile}` : `/search-archive/${selectedFile}`;
+    const endpoint = currentView === 'summary' ? `/ArXiv_RAG_FAISS_Explorer/summary_archive/${selectedFile}` : `/ArXiv_RAG_FAISS_Explorer/search_archive/${selectedFile}`;
     console.log('Fetching data from:', endpoint);
 
     fetch(endpoint)
@@ -87,7 +87,7 @@ function loadJsonFile() {
 
 function loadJsonFiles() {
   console.log('loadJsonFiles function called');
-  const endpoint = currentView === 'summary' ? '/summary-archive' : '/search-archive';
+  const endpoint = currentView === 'summary' ? '/ArXiv_RAG_FAISS_Explorer/summary_archive' : '/ArXiv_RAG_FAISS_Explorer/search_archive';
   fetch(endpoint)
     .then(response => response.json())
     .then(files => {
@@ -95,7 +95,7 @@ function loadJsonFiles() {
       select.innerHTML = '';
 
       const filePromises = files.map(file => {
-        const fileEndpoint = currentView === 'summary' ? `/summary-archive/${file}` : `/search-archive/${file}`;
+        const fileEndpoint = currentView === 'summary' ? `/ArXiv_RAG_FAISS_Explorer/summary_archive/${file}` : `/ArXiv_RAG_FAISS_Explorer/search_archive/${file}`;
         return fetch(fileEndpoint).then(response => response.json());
       });
 

@@ -7,8 +7,13 @@ from glob import glob
 import re
 from datetime import datetime
 
-search_archive_dir = './search_archive'
-summary_archive_dir = './summary_archive'
+# Load the configuration file
+with open('config.json', 'r') as f:
+    config = json.load(f)
+
+directory = config['baseDir']
+search_archive_dir = os.path.join(directory, config['searchArchiveDir'])
+summary_archive_dir = os.path.join(directory, config['summaryArchiveDir'])
 
 def get_latest_json_file():
     json_files = glob(os.path.join(search_archive_dir, '*.json'))
@@ -75,44 +80,35 @@ def main(file_name):
     if not os.path.isfile(json_file):
         print(f"File not found: {json_file}")
         return
-
     with open(json_file, 'r') as file:
         data = json.load(file)
-
-    query = data['query']
-    uuid = data['id']  # Get the UUID from the abstract JSON file
-    summary_results = []
-
-    for result in data['results']:
-        abstract = result['Abstract']
-        rank = result['Rank']
-        category = result['Categories']
-        file = result['File']
-
-        first_sentence = extract_title(abstract)  # Extract the first sentence from the abstract
-        title = generate_title(client, first_sentence)  # Generate a title for the abstract
-        summary = summarize_abstract(client, abstract)  # Summarize the abstract
-
-        summary_result = {
-            'Rank': rank,
-            'File': file,
-            'Categories': category,
-            'Title': title,
-            'Summary': summary
-        }
-        summary_results.append(summary_result)
-
-    save_summary(query, summary_results, uuid)
+        query = data['query']
+        uuid = data['id']  # Get the UUID from the abstract JSON file
+        summary_results = []
+        for result in data['results']:
+            abstract = result['Abstract']
+            rank = result['Rank']
+            category = result['Categories']
+            file = result['File']
+            first_sentence = extract_title(abstract)  # Extract the first sentence from the abstract
+            title = generate_title(client, first_sentence)  # Generate a title for the abstract
+            summary = summarize_abstract(client, abstract)  # Summarize the abstract
+            summary_result = {
+                'Rank': rank,
+                'File': file,
+                'Categories': category,
+                'Title': title,
+                'Summary': summary
+            }
+            summary_results.append(summary_result)
+        save_summary(query, summary_results, uuid)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Summarize an abstract JSON file')
     parser.add_argument('file_name', type=str, help='Name of the abstract JSON file to summarize')
-
     if len(sys.argv) < 2:
         parser.print_usage()
         print("Please provide the name of the abstract JSON file to summarize.")
         sys.exit(1)
-
     args = parser.parse_args()
-
     main(args.file_name)
