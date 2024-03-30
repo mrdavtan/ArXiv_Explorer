@@ -1,5 +1,7 @@
 # ArXiv RAG/FAISS Explorer
 
+![arxiv_rag_faiss_explorer](https://github.com/mrdavtan/ArXiv_Explorer/assets/21132073/51cfdb1c-ad16-427d-9d37-18f2178c3098)
+
 ## Introduction
 
 The ArXiv RAG/FAISS Explorer is a basic node js app that I built for my own AI research after finding some of the alternatives a bit expensive.
