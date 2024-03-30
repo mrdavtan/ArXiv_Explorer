@@ -4,9 +4,11 @@
 
 ## Background
 
-The ArXiv RAG/FAISS Explorer is a node app with a few convenience features for my own research; mainly similarity search, ranking, summarizing (OpenAI API) for quickly browsing related AI/ML topics/literature. The dataset is free and incredibly powerful. Use it for good. To read more about the Open Archives Initiative: https://info.arxiv.org/help/oa/index.html
+The ArXiv RAG/FAISS Explorer is a web app utility with basic convenience features I needed for quickly looking up related AI/ML topics/literature and saving them for later reading. There are paid tools that do basically the same thing. The dataset is free and incredibly powerful. So is this web app. Use it for good.
 
-There is a training step involved, so if you're familiar with python and node.js, you should be able to get this to run fairly easily. I've ironed out some of the issues from the original training instructions. Future work: paper insights and a system to update to the latest dataset automatically.
+To read more about the Open Archives Initiative: https://info.arxiv.org/help/oa/index.html
+
+There is a training step involved, so if you're familiar with python and node.js, you should be able to get this to run fairly easily. I'm running this on Ubuntu 22.04. It should be straight forward on macOS. If you're on Windows, WSL2 should be fine. I've ironed out some of the issues from the original training instructions. Future work: paper insights and a system to update to the latest dataset automatically.
 
 ## Description
 
