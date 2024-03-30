@@ -4,7 +4,7 @@
 
 ## Introduction
 
-The ArXiv RAG/FAISS Explorer is a basic node js app that I built for my own AI research after finding some of the alternatives a bit expensive.
+The ArXiv RAG/FAISS Explorer is a node app that I decided to build after trying out paid and free alternatives and not being happy with either.
 
 This tool uses vector similarity search for exploring the extensive collection of research papers on ArXiv. Inspired by the approach outlined in tutorials by vbookshelf (https://www.kaggle.com/vbookshelf), this tool facilitates natural language queries, enabling users to sift through approximately 2.4 million papers with ease and efficiency for free. This project integrates FAISS (Facebook AI Similarity Search) and Sentence Transformers.
 
@@ -32,7 +32,7 @@ The utility processes titles and abstracts of ArXiv papers, converting them into
 git clone git@github.com:mrdavtan/ArXiv_RAG_FAISS.git
 # Navigate to the project directory
 cd ArXiv_RAG_FAISS
-# I suggest using a virtual env.
+# I suggest using a virtual env. for the training.
 python -m venv .venv
 source .venv/bin/activate
 # Install dependencies
@@ -44,36 +44,18 @@ npm install
 node server.js
 ```
 
-Open your browser and go to http://localhost:3000
+Open a browser and go to http://localhost:3000
 
 ## Dataset
 
 You will need the arxiv dataset which can be found at https://www.kaggle.com/datasets/Cornell-University/arxiv
-Make sure to update the path to your dataset in the search.py script.
+The training step took about an hour and half on my RTX 4080 GPU. I update the training method in my script as I had errors when following the original training steps.
+
 
 # Usage
 
-## Example usage
+Enter some keywords in the search bar and hit submit. It can take up to a minute based on the number of searches and your GPU. I suggest keeping it to 10 or less.
 
-```bash
-from arxiv_rag_faiss import ArxivSearch
-```
-
-## Initialize the search utility
-
-```bash
-search_utility = ArxivSearch()
-```
-
-## Perform a search
-
-```bash
-results = search_utility.search("I want to build a flying carpet using the latest in lighter than air fabrics and anti-gravity technology")
-print(results)
-```
-
-For more information about how to choose an index:
-https://github.com/facebookresearch/faiss/wiki/Guidelines-to-choose-an-index
 
 ## Resources and Acknowledgments
 
