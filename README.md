@@ -4,11 +4,9 @@
 
 ## Background
 
-The ArXiv RAG/FAISS Explorer is a utility I made for quickly looking up related AI/ML topics/literature and saving them for later reading. There are paid tools that do basically the same thing. The dataset is free and an incredibly powerful resource. Let's make these resources more accessible.
+The ArXiv RAG/FAISS Explorer is a utility I made for quickly looking up related AI/ML topics/literature and saving them for later reading. To read more about the Open Archives Initiative: https://info.arxiv.org/help/oa/index.html
 
-To read more about the Open Archives Initiative: https://info.arxiv.org/help/oa/index.html
-
-There is a training step involved, so if you're familiar with a bit of python and node, you should be able to get this to run fairly easily. I'm running this on Ubuntu 22.04. It should be straight forward on macOS. If you're on Windows, I suggest using WSL2. Future work (time allowing): paper insights and a system to update to the latest dataset automatically.
+There is a training step involved, so if you're familiar with a bit of python and node, you should be able to get this to run fairly easily. I'm running this on Ubuntu 22.04. Future work: paper insights and updating to latest dataset automatically.
 
 ## Description
 
